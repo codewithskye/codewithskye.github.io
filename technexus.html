@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog posts by Daniel Owolabi on UI/UX design, web development, and crypto news.">
+    <meta name="keywords" content="UI/UX design, web development, crypto news, blog, Daniel Owolabi">
+    <meta name="author" content="Daniel Owolabi">
+    <title>Tech Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+</head>
+<body>
+    <!-- Greeting Popup -->
+    <div class="greeting-popup" id="greetingPopup">
+        <div class="greeting-card">
+            <i class='bx bx-x' id="closePopup"></i>
+            <h2 id="greeting-text"></h2>
+            <p>Welcome to Tech Nexus! Explore blog posts, stay updated with crypto news, use the crypto calculator, track crypto transactions, view live charts, and chat with Skye AI.</p><br>
+            <p id="greeting-time-date"></p>
+            <p>⚠️ Please ensure you have a strong and active internet connection while using this page.</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="mobile-scroll">
+        <a href="index.html" class="logo"><span>Skye</span></a>
+        <div class="menu-toggle-container">
+            <div class="mode-toggle" title="Toggle Dark Mode">
+                <i class='bx bx-moon' id="dark-mode-toggle"></i>
+            </div>
+            <div class="menu-toggle">
+                <i class='bx bx-menu-alt-right' id="menu-open"></i>
+                <i class='bx bx-x' id="menu-close" style="display: none;"></i>
+            </div>
+        </div>
+        <ul class="links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#crypto-news">Latest News</a></li>
+            <li><a href="#economic-calendar">Economic Calendar</a></li>
+            <li><a href="#pips-calculator">Pips Calculator</a></li>
+            <li><a href="#crypto-charts">Crypto Charts</a></li>
+            <li><a href="#crypto-calculator">Crypto Calculator</a></li>
+            <li><a href="#crypto-tracker">Crypto Tracker</a></li>
+            <li><a href="#ai-chatbot">AI</a></li>
+            <li><a href="contact.html" class="btn nav-btn">Contact Me <i class='bx bxs-chevron-right'></i></a></li>
+        </ul>
+        <div class="nav-right">
+            <a href="contact.html" class="btn nav-btn">Contact Me <i class='bx bxs-chevron-right'></i></a>
+            <div class="mode-toggle" title="Toggle Dark Mode">
+                <i class='bx bx-moon' id="dark-mode-toggle"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Blog Section -->
+    <section id="blog" class="mobile-scroll content-section">
+        <div class="projects-header">
+            <h1 class="header mobile-scroll"><span>Blog</span></h1>
+        </div>
+        <div class="projects-container">
+            <a href="https://bit.ly/safe-memecoins-guide" class="blog-link" target="_blank" rel="noopener noreferrer">
+                <div class="box mobile-scroll">
+                    <h1><span>Don't Get RUGGED</span></h1>
+                    <p>Avoid Memecoin Scams Like a Pro Laugh All the Way to the Bank: Avoid Meme Coin Scams Like a Pro | Notion</p>
+                    <img src="images/memecoin1.png" alt="Blog post" onerror="this.src='https://via.placeholder.com/300x200?text=Memecoin+Guide';">
+                </div>
+            </a>
+            <a href="https://t.me/signal_spectrum" class="blog-link" target="_blank" rel="noopener noreferrer">
+                <div class="box mobile-scroll">
+                    <h1><span>Signal Spectrum</span></h1>
+                    <p>Signal Spectrum is your trusted source for timely updates, daily GameFi airdrop combos, and potential project insights, on Telegram.</p>
+                    <img src="images/signal.jpg" alt="Responsive Design" onerror="this.src='https://via.placeholder.com/300x200?text=Responsive+Design';">
+                </div>
+            </a>
+            <a href="https://t.me/blumcrypto/891" class="blog-link" target="_blank" rel="noopener noreferrer">
+                <div class="box mobile-scroll">
+                    <h1><span>How to spot a legit token from a scam?🕵️‍♂️</span></h1>
+                    <p>Blum gives you verified charts, holder stats, and community signals – so you can spot scams before they spot you.</p>
+                    <img src="images/blum.jpeg" alt="Responsive Design" onerror="this.src='https://via.placeholder.com/300x200?text=Responsive+Design';">
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Latest News Section -->
+    <section id="crypto-news" class="content-section">
+        <div class="projects-header">
+            <h1 class="header"><span>Latest News</span></h1>
+            <div class="refresh-container">
+                <a href="#" id="news-refresh" class="refresh-link">Refresh</a>
+            </div>
+        </div>
+        <div class="projects-container" id="crypto-news-container">
+            <div class="loading-indicator">Loading news...</div>
+        </div>
+    </section>
+
+    <!-- Economic Calendar Section -->
+    <section id="economic-calendar" class="mobile-scroll content-section">
+        <div class="projects-header">
+            <h1 class="header mobile-scroll"><span>Economic Calendar</span></h1>
+        </div>
+        <div class="projects-container">
+            <div class="box mobile-scroll economic-calendar-box">
+                <h1><span>Upcoming Economic Events</span></h1>
+                <div class="economic-calendar-container">
+                    <iframe src="https://widget.myfxbook.com/widget/calendar.html?lang=en&impacts=0,1,2,3&symbols=AUD,CAD,CHF,CNY,EUR,GBP,JPY,NZD,USD" style="border: 0; width: 100%; height: 700px;"></iframe>
+                    <div class="calendar-footer">
+                        <a href="https://www.myfxbook.com/forex-economic-calendar?utm_source=widget13&utm_medium=link&utm_campaign=copyright" title="Economic Calendar" class="myfxbookLink" target="_blank" rel="noopener">Economic Calendar</a> by Myfxbook.com
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pips Calculator Section -->
+    <section id="pips-calculator" class="mobile-scroll content-section">
+        <div class="projects-header">
+            <h1 class="header mobile-scroll"><span>Pips Calculator</span></h1>
+        </div>
+        <div class="projects-container">
+            <div class="box mobile-scroll">
+                <h1><span>Calculate Forex Pips & Risk</span></h1>
+                <div class="pips-calculator-container">
+                    <div class="pips-calculator-inputs">
+                        <div class="input-group">
+                            <label for="pips-pair"><span>Currency Pair</span></label>
+                            <select id="pips-pair">
+                                <option value="EUR/USD">EUR/USD</option>
+                                <option value="GBP/USD">GBP/USD</option>
+                                <option value="USD/JPY">USD/JPY</option>
+                                <option value="AUD/USD">AUD/USD</option>
+                                <option value="USD/CAD">USD/CAD</option>
+                                <option value="USD/CHF">USD/CHF</option>
+                                <option value="NZD/USD">NZD/USD</option>
+                                <option value="NZD/USD">XAU/USD</option>
+
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="pips-account-balance"><span>Account Balance</span></label>
+                            <input type="number" id="pips-account-balance" placeholder="e.g., 10000" min="0" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label for="pips-risk-percent"><span>Risk Percentage (%)</span></label>
+                            <input type="number" id="pips-risk-percent" placeholder="e.g., 2" min="0" max="100" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="pips-entry-price"><span>Entry Price</span></label>
+                            <input type="number" id="pips-entry-price" placeholder="e.g., 1.2000" step="0.00001">
+                        </div>
+                        <div class="input-group">
+                            <label for="pips-stop-loss"><span>Stop-Loss Price</span></label>
+                            <input type="number" id="pips-stop-loss" placeholder="e.g., 1.1950" step="0.00001">
+                        </div>
+                        <div class="input-group">
+                            <label for="pips-take-profit"><span>Take-Profit Price</span></label>
+                            <input type="number" id="pips-take-profit" placeholder="e.g., 1.2100" step="0.00001">
+                        </div>
+                        <div class="input-group">
+                            <label for="pips-lot-size"><span>Lot Size</span></label>
+                            <input type="number" id="pips-lot-size" placeholder="e.g., 0.1" min="0" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label for="pips-account-currency"><span>Account Currency</span></label>
+                            <select id="pips-account-currency">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="JPY">JPY</option>
+                                <option value="AUD">AUD</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="pips-calculate-btn" class="btn">Calculate <i class='bx bx-calculator'></i></button>
+                    <div id="pips-result" class="pips-result"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Crypto Calculator Section -->
+    <section id="crypto-calculator" class="mobile-scroll content-section">
+        <div class="projects-header">
+            <h1 class="header mobile-scroll"><span>Crypto Calculator</span></h1>
+        </div>
+        <div class="projects-container">
+            <div class="box mobile-scroll">
+                <h1><span>Convert Cryptocurrency</span></h1>
+                <div class="calculator-container">
+                    <div class="calculator-inputs">
+                        <div class="input-group">
+                            <label for="crypto-search"><span>Cryptocurrency</span></label>
+                            <input type="text" id="crypto-search" placeholder="Search for a cryptocurrency (e.g., Bitcoin)">
+                            <ul id="crypto-suggestions" class="suggestions-list"></ul>
+                        </div>
+                        <div class="input-group">
+                            <label for="crypto-amount"><span>Amount</span></label>
+                            <input type="number" id="crypto-amount" placeholder="e.g., 0.0001" step="0.00000001" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="currency-select"><span>Currency</span></label>
+                            <select id="currency-select">
+                                <option value="usd">USD</option>
+                                <option value="eur">EUR</option>
+                                <option value="gbp">GBP</option>
+                                <option value="jpy">JPY</option>
+                                <option value="aud">AUD</option>
+                                <option value="ngn">NGN</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="calculate-btn" class="btn">Calculate <i class='bx bx-calculator'></i></button>
+                    <div id="calculator-result" class="calculator-result"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Crypto Tracker Section -->
+    <section id="crypto-tracker" class="mobile-scroll content-section">
+        <div class="projects-header">
+            <h1 class="header mobile-scroll"><span>Crypto Transaction Tracker</span></h1>
+        </div>
+        <div class="projects-container">
+            <div class="box mobile-scroll">
+                <h1><span>Track Your Transactions</span></h1>
+                <div class="tracker-container">
+                    <div class="tracker-inputs">
+                        <div class="input-group">
+                            <label for="wallet-address"><span>Wallet Address</span></label>
+                            <input type="text" id="wallet-address" placeholder="Enter your wallet address">
+                        </div>
+                        <div class="input-group">
+                            <label for="crypto-select"><span>Cryptocurrency</span></label>
+                            <select id="crypto-select">
+                                <option value="bitcoin">Bitcoin (BTC)</option>
+                                <option value="ethereum">Ethereum (ETH)</option>
+                                <option value="bnb">BNB (BNB)</option>
+                                <option value="ton">TON (TON)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="track-btn" class="btn">Track Transactions <i class='bx bx-search'></i></button>
+                    <div id="tracker-result" class="tracker-result"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Crypto Charts Section -->
+    <section id="crypto-charts" class="mobile-scroll content-section">
+        <div class="projects-header">
+            <h1 class="header mobile-scroll"><span>Live Crypto & Stock Chart</span></h1>
+        </div>
+        <div class="projects-container">
+            <div class="box mobile-scroll">
+                <h1><span>Interactive Market Chart</span></h1>
+                <div class="tradingview-widget-container">
+                    <div id="tradingview_chart"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Chatbot Section -->
+    <section id="ai-chatbot" class="content-section">
+        <div class="projects-header">
+            <h1 class="header"><span>Ask Skye AI</span></h1>
+        </div>
+        <div class="chatbot-container">
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="message bot-message">Hi! I’m Skye AI, ready to answer your questions. Ask me anything! 😊</div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbot-input" placeholder="Type your question..." />
+                <button class="btn chatbot-send"><i class='bx bxs-send'></i></button>
+            </div>
+        </div>
+    </section>
+        <!-- QR Code Section -->
+        <section class="qr-code-section mobile-scroll content-section">
+            <h2 class="qr-header">Connect Instantly</h2>
+            <div class="qr-container">
+                <div class="qr-box">
+                    <a href="https://wa.me/+2347016794490" target="_blank" rel="noopener noreferrer">
+                        <img src="images/whatsapp_qr.jpg" alt="WhatsApp QR Code" class="qr-image">
+                    </a>
+                    <p class="qr-text">Scan Me for WhatsApp</p>
+                </div>
+                <div class="qr-box">
+                    <a href="https://www.linkedin.com/in/codewithskye/" target="_blank" rel="noopener noreferrer">
+                        <img src="images/linkedin_qr.jpg" alt="Telegram QR Code" class="qr-image">
+                    </a>
+                    <p class="qr-text">Scan Me for Linkedin</p>
+                </div>
+                <div class="qr-box">
+                    <a href="https://t.me/danskye007" target="_blank" rel="noopener noreferrer">
+                        <img src="images/telegram_qr.jpg" alt="Telegram QR Code" class="qr-image">
+                    </a>
+                    <p class="qr-text">Scan Me for Telegram</p>
+                </div>
+                <div class="qr-box">
+                    <a href="https://t.me/danskye007" target="_blank" rel="noopener noreferrer">
+                        <img src="images/instagram_qr.jpg" alt="Telegram QR Code" class="qr-image">
+                    </a>
+                    <p class="qr-text">Scan Me for Instagram</p>
+                </div>
+            </div>
+        </section>
+
+    <!-- Footer -->
+    <footer class="mobile-scroll">
+        <div class="copyright">
+            <span>© All rights reserved <strong>skyedesigns</strong> 2025</span>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
