@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Explore the projects of Daniel Owolabi, showcasing UI/UX design and web development work.">
-    <meta name="keywords" content="UI/UX design, web development, projects, Daniel Owolabi">
+    <meta name="description" content="Explore the projects of Daniel Owolabi, showcasing UI/UX design, web development, graphics design, and video editing work.">
+    <meta name="keywords" content="UI/UX design, web development, graphics design, video editing, projects, Daniel Owolabi">
     <meta name="author" content="Daniel Owolabi">
     <title>Projects - Daniel Owolabi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +35,7 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="projects.html">Projects</a></li>
-            <li><a href="technexus.html">Tech Nexus</a></li>
+            <li><a href="technexus.html">Tech Nexus <span class="new-badge">New</span></a></li>
             <li><a href="contact.html" class="btn nav-btn">Contact Me <i class='bx bxs-chevron-right'></i></a></li>
         </ul>
         <div class="nav-right">
@@ -51,65 +51,79 @@
         <div class="projects-header">
             <h1 class="header mobile-scroll"><span>Projects</span></h1>
         </div>
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="website-design">Website Design</button>
+            <button class="filter-btn" data-filter="graphics-design">Graphics Design</button>
+            <button class="filter-btn" data-filter="mobile-app">Mobile App</button>
+            <button class="filter-btn" data-filter="video-editing">Video Editing</button>
+        </div>
         <div class="projects-container">
-            <div class="project-card mobile-scroll">
-                <img src="images/Shopdart.png" alt="Flavor Folio" onerror="this.src='https://via.placeholder.com/800x400?text=Flavor+Folio';">
-                <h3><span>Project name:🛍️ ShopDart - A Live Multi Vendor E-commerce Website</span></h3>
-                <p class="project-description">Description: ShopDart is a live ecommerce website offering trendy, high-quality fashion with a fast and user-focused shopping experience. The hero section features a bold, modern layout that speaks to style and convenience:</p>
-                <p class="project-description">Tagline: “Shop Smarter, Live Better.”
-
-                    Clean design with smooth gradients and lifestyle imagery
-                    
-                    One-click shopping with a clear Start Shopping CTA
-                    
-                    Live cart updates, user account access, and responsive navigation
-                    
-                    Built for performance, designed for elegance — ShopDart delivers fashion at dart speed.</p>
+            <div class="project-card mobile-scroll" data-category="website-design">
+                <img src="images/Shopdart.png" alt="ShopDart" onerror="this.src='https://via.placeholder.com/800x400?text=ShopDart';">
+                <h3><span>ShopDart - A Live Multi Vendor E-commerce Website</span></h3>
+                <p class="project-description">Category: Website Design</p>
+                <p class="project-description">Description: ShopDart is a live e-commerce website offering trendy, high-quality fashion with a fast and user-focused shopping experience. The hero section features a bold, modern layout that speaks to style and convenience.</p>
+                <p class="project-description">Tagline: “Shop Smarter, Live Better.”</p>
+                <p class="project-description">
+                    - Clean design with smooth gradients and lifestyle imagery<br>
+                    - One-click shopping with a clear Start Shopping CTA<br>
+                    - Live cart updates, user account access, and responsive navigation<br>
+                    - Built for performance, designed for elegance.
+                </p>
                 <a href="https://shopdart.42web.io" class="view-site" target="_blank" rel="noopener noreferrer">Visit Site <i class='bx bx-right-arrow-alt'></i></a>
             </div>
-            <div class="project-card mobile-scroll">
-                <img src="images/bbt.jpg" alt="Flavor Folio" onerror="this.src='https://via.placeholder.com/800x400?text=Flavor+Folio';">
-                <h3><span>Project name:🔥 BBT Generating – Smart Conversations, Smarter Design</span></h3>
-                <p class="project-description">Description: A modern, AI-focused landing page created with usability and visual impact in mind. 
-                    This hero section introduces BBT Generating, an AI chatbot similar to ChatGPT, designed to deliver the best prompts for smarter conversations.</p>
-                <p class="project-description">Key Features: Bold, typographic headline for instant engagement
-
-                    3D keyboard visual with glowing AI key (adds depth and tech appeal)<br><br>
-                    
-                    Clear CTAs: “Get Started” and “Our Pricing”
-                    
-                    Subtle gradients and shadows for a premium, modern feel
-                    
-                    Testimonial block to build trust
-                    
-                    Green accent for action and brand identity</p>
-                    <p class="project-description">Note: This experience is optimized for desktop users. 3D effects and interactive mouse-click animations are best viewed on larger screens.</p>
+            <div class="project-card mobile-scroll" data-category="website-design">
+                <img src="images/bbt.jpg" alt="BBT Generating" onerror="this.src='https://via.placeholder.com/800x400?text=BBT+Generating';">
+                <h3><span>BBT Generating – Smart Conversations, Smarter Design</span></h3>
+                <p class="project-description">Category: Website Design</p>
+                <p class="project-description">Description: A modern, AI-focused landing page created with usability and visual impact in mind. This hero section introduces BBT Generating, an AI chatbot designed to deliver the best prompts for smarter conversations.</p>
+                <p class="project-description">
+                    - Bold, typographic headline for instant engagement<br>
+                    - 3D keyboard visual with glowing AI key<br>
+                    - Clear CTAs: “Get Started” and “Our Pricing”<br>
+                    - Subtle gradients and shadows for a premium feel<br>
+                    - Testimonial block to build trust<br>
+                    - Green accent for action and brand identity
+                </p>
+                <p class="project-description">Note: Optimized for desktop users. 3D effects and animations are best viewed on larger screens.</p>
                 <a href="https://purple-term-0787.animaapp.io/?v=bba12ee3-7734-4bb5-965b-589ad958b2c9" class="view-site" target="_blank" rel="noopener noreferrer">Visit Site <i class='bx bx-right-arrow-alt'></i></a>
             </div>
-            <div class="project-card mobile-scroll">
+            <div class="project-card mobile-scroll" data-category="mobile-app">
                 <img src="images/foodfolio1.png" alt="Flavor Folio" onerror="this.src='https://via.placeholder.com/800x400?text=Flavor+Folio';">
-                <h3><span>Project name: Flavor Folio</span></h3>
+                <h3><span>Flavor Folio</span></h3>
+                <p class="project-description">Category: Mobile App</p>
                 <p class="project-description">Description: A food delivery app with a focus on intuitive UI/UX design, streamlined navigation, and vibrant visuals to enhance user experience.</p>
                 <a href="https://example.com" class="view-site" target="_blank" rel="noopener noreferrer">Visit Site <i class='bx bx-right-arrow-alt'></i></a>
             </div>
-            <div class="project-card mobile-scroll">
+            <div class="project-card mobile-scroll" data-category="website-design">
                 <img src="images/real_estate.png" alt="Real Estate" onerror="this.src='https://via.placeholder.com/800x400?text=Real+Estate';">
-                <h3><span>Project name: Real Estate</span></h3>
+                <h3><span>Real Estate</span></h3>
+                <p class="project-description">Category: Website Design</p>
                 <p class="project-description">Description: A responsive real estate listing website with advanced search filters, interactive maps, and a user-friendly interface.</p>
                 <a href="https://example.com" class="view-site" target="_blank" rel="noopener noreferrer">Visit Site <i class='bx bx-right-arrow-alt'></i></a>
             </div>
-            <div class="project-card mobile-scroll">
+            <div class="project-card mobile-scroll" data-category="website-design">
                 <img src="images/insightledger1.png" alt="E-Commerce" onerror="this.src='https://via.placeholder.com/800x400?text=E-Commerce';">
-                <h3><span>Project name: E-Commerce Platform</span></h3>
+                <h3><span>E-Commerce Platform</span></h3>
+                <p class="project-description">Category: Website Design</p>
                 <p class="project-description">Description: An e-commerce website with a clean design, optimized for conversions, featuring product filters, secure checkout, and responsive layouts.</p>
                 <a href="https://example.com" class="view-site" target="_blank" rel="noopener noreferrer">Visit Site <i class='bx bx-right-arrow-alt'></i></a>
             </div>
-            <div class="project-card mobile-scroll">
-                <img src="images/Shopdart.png" alt="Crypto App" onerror="this.src='https://via.placeholder.com/800x400?text=Crypto+App';">
-                <h3><span>Project name: Shop Dart</span></h3>
-                <p class="project-description">Description: ShopDart, your go-to destination for modern, comfortable, and stylish clothing made for real life. </p>
-                <a href="https://shopdart.42web.io" class="view-site" target="_blank" rel="noopener noreferrer">Visit Site <i class='bx bx-right-arrow-alt'></i></a>
-            </div>
+<!--             <div class="project-card mobile-scroll" data-category="graphics-design">
+                <img src="images/memecoin1.png" alt="Brand Identity" onerror="this.src='https://via.placeholder.com/800x400?text=Brand+Identity';">
+                <h3><span>Brand Identity Design</span></h3>
+                <p class="project-description">Category: Graphics Design</p>
+                <p class="project-description">Description: A complete brand identity package for a startup, including logo, business cards, and marketing materials designed in Figma with a modern, minimalist aesthetic.</p>
+                <a href="https://example.com" class="view-site" target="_blank" rel="noopener noreferrer">View Designs <i class='bx bx-right-arrow-alt'></i></a>
+            </div> -->
+            <!-- <div class="project-card mobile-scroll" data-category="video-editing">
+                <img src="images/memecoin1.png" alt="Promotional Video" onerror="this.src='https://via.placeholder.com/800x400?text=Promotional+Video';">
+                <h3><span>Promotional Video</span></h3>
+                <p class="project-description">Category: Video Editing</p>
+                <p class="project-description">Description: A dynamic promotional video for a tech product, featuring smooth transitions, text overlays, and background music, edited using Adobe Premiere Pro.</p>
+                <a href="https://example.com" class="view-site" target="_blank" rel="noopener noreferrer">Watch Video <i class='bx bx-right-arrow-alt'></i></a>
+            </div> -->
         </div>
     </section>
 
@@ -132,36 +146,38 @@
             <p class="marquee">👨‍💻 UX/UI Designer • 🎨 Figma • 🚀 Webflow • 🧠 Design Thinking • 📱 Responsive Design • 🔧 Prototyping • Available for freelance work! Let’s collaborate on your next project.</p>
         </div>
     </section>
-        <!-- QR Code Section -->
-        <section class="qr-code-section mobile-scroll content-section">
-            <h2 class="qr-header">Connect Instantly</h2>
-            <div class="qr-container">
-                <div class="qr-box">
-                    <a href="https://wa.me/+2347016794490" target="_blank" rel="noopener noreferrer">
-                        <img src="images/whatsapp_qr.jpg" alt="WhatsApp QR Code" class="qr-image">
-                    </a>
-                    <p class="qr-text">Scan Me for WhatsApp</p>
-                </div>
-                <div class="qr-box">
-                    <a href="https://www.linkedin.com/in/codewithskye/" target="_blank" rel="noopener noreferrer">
-                        <img src="images/linkedin_qr.jpg" alt="Telegram QR Code" class="qr-image">
-                    </a>
-                    <p class="qr-text">Scan Me for Linkedin</p>
-                </div>
-                <div class="qr-box">
-                    <a href="https://t.me/danskye007" target="_blank" rel="noopener noreferrer">
-                        <img src="images/telegram_qr.jpg" alt="Telegram QR Code" class="qr-image">
-                    </a>
-                    <p class="qr-text">Scan Me for Telegram</p>
-                </div>
-                <div class="qr-box">
-                    <a href="https://t.me/danskye007" target="_blank" rel="noopener noreferrer">
-                        <img src="images/instagram_qr.jpg" alt="Telegram QR Code" class="qr-image">
-                    </a>
-                    <p class="qr-text">Scan Me for Instagram</p>
-                </div>
+
+    <!-- QR Code Section -->
+    <section class="qr-code-section mobile-scroll content-section">
+        <h2 class="qr-header">Connect Instantly</h2>
+        <div class="qr-container">
+            <div class="qr-box">
+                <a href="https://wa.me/+2347016794490" target="_blank" rel="noopener noreferrer">
+                    <img src="images/whatsapp_qr.jpg" alt="WhatsApp QR Code" class="qr-image">
+                </a>
+                <p class="qr-text">Scan Me for WhatsApp</p>
             </div>
-        </section>
+            <div class="qr-box">
+                <a href="https://www.linkedin.com/in/codewithskye/" target="_blank" rel="noopener noreferrer">
+                    <img src="images/linkedin_qr.jpg" alt="LinkedIn QR Code" class="qr-image">
+                </a>
+                <p class="qr-text">Scan Me for LinkedIn</p>
+            </div>
+            <div class="qr-box">
+                <a href="https://t.me/danskye007" target="_blank" rel="noopener noreferrer">
+                    <img src="images/telegram_qr.jpg" alt="Telegram QR Code" class="qr-image">
+                </a>
+                <p class="qr-text">Scan Me for Telegram</p>
+            </div>
+            <div class="qr-box">
+                <a href="https://t.me/danskye007" target="_blank" rel="noopener noreferrer">
+                    <img src="images/instagram_qr.jpg" alt="Instagram QR Code" class="qr-image">
+                </a>
+                <p class="qr-text">Scan Me for Instagram</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="mobile-scroll">
         <div class="col-left">
