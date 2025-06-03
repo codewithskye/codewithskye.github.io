@@ -3,7 +3,7 @@ const API_CONFIG = {
         provider: "BlockCypher",
         baseUrl: "https://api.blockcypher.com/v1/btc/main",
         apiKey: null,
-        endpoint: "/addrs/{address}?limit=10",
+        endpoint: "/addrs/{address}/full?limit=10", // Changed to /full for detailed transactions
         coingeckoId: "bitcoin"
     },
     ethereum: {
@@ -38,6 +38,17 @@ const API_CONFIG = {
         baseUrl: "https://api.example.com/economic-calendar",
         apiKey: null,
         endpoint: "/events?date={date}¤cy={currency}"
+    },
+    news: {
+        provider: "NewsAPI",
+        baseUrl: "https://newsapi.org/v2",
+        apiKey: "564f407632a24f2a9d2f5747f2442bbc", // Your NewsAPI key
+        endpoint: "/top-headlines"
+    },
+    geolocation: {
+        provider: "OpenCage",
+        baseUrl: "https://api.opencagedata.com/geocode/v1/json",
+        apiKey: "c3732fd755a0459f987b2eea2f46e906" // Your OpenCage API key
     }
 };
 
@@ -261,14 +272,16 @@ async function fetchTransactions(walletAddress, crypto, retries = 3, delay = 100
             if (!response.ok) {
                 const text = await response.text();
                 console.error(`Explorer error for ${crypto}: Status ${response.status}, Response: ${text}`);
-                throw new Error(`Failed to fetch transactions: ${response.status}`);
+                throw new Error(`Failed to fetch transactions: ${response.status} - ${text}`);
             }
 
             const data = await response.json();
             let transactions = [];
 
             if (crypto === 'bitcoin') {
-                transactions = data.txs || [];
+                // Handle both txs and txrefs for Bitcoin
+                transactions = (data.txs || data.txrefs || []).slice(0, 10);
+                console.log('Bitcoin API response:', data); // Debug log
             } else if (crypto === 'ethereum' || crypto === 'bnb') {
                 transactions = data.result || [];
             } else if (crypto === 'ton') {
@@ -314,17 +327,18 @@ function renderTransactions({ data, price }, crypto, container) {
         if (crypto === 'bitcoin') {
             transactions = (data || [])
                 .filter(tx => {
-                    if (seenTxIds.has(tx.hash)) return false;
-                    seenTxIds.add(tx.hash);
+                    const txId = tx.hash || tx.tx_hash; // Handle both hash and tx_hash
+                    if (seenTxIds.has(txId)) return false;
+                    seenTxIds.add(txId);
                     return true;
                 })
                 .map(tx => ({
-                    txId: tx.hash,
-                    amount: tx.total ? tx.total / 1e8 : 'N/A',
-                    amountUsd: tx.total && price ? (tx.total / 1e8 * price).toFixed(2) : 'N/A',
-                    time: tx.received ? formatTimestamp(new Date(tx.received).getTime() / 1000) : 'Pending',
-                    confirmations: tx.confirmations || '0',
-                    txLink: `https://live.blockcypher.com/btc/tx/${tx.hash}`,
+                    txId: tx.hash || tx.tx_hash || 'N/A',
+                    amount: tx.total ? tx.total / 1e8 : (tx.value ? tx.value / 1e8 : 'N/A'), // Handle value for txrefs
+                    amountUsd: tx.total && price ? (tx.total / 1e8 * price).toFixed(2) : (tx.value && price ? (tx.value / 1e8 * price).toFixed(2) : 'N/A'),
+                    time: tx.received ? formatTimestamp(new Date(tx.received).getTime() / 1000) : (tx.block_time ? formatTimestamp(new Date(tx.block_time).getTime() / 1000) : 'Pending'),
+                    confirmations: tx.confirmations || (tx.confirmed ? 'Confirmed' : '0'),
+                    txLink: `https://blockcypher.com/btc/tx/${tx.hash || tx.tx_hash}`, // Fixed to use correct txId
                     unit: 'BTC'
                 }));
         } else if (crypto === 'ethereum') {
@@ -378,7 +392,7 @@ function renderTransactions({ data, price }, crypto, container) {
         }
 
         if (!transactions || transactions.length === 0) {
-            container.innerHTML = '<p>No transactions found.</p>';
+            container.innerHTML = '<p>No transactions found. Please verify the wallet address or try again later.</p>';
             return;
         }
 
@@ -477,7 +491,48 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-
+        // Filter Functionality (Add this section here)
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+        const projectsContainer = document.querySelector('.projects-container');
+        const comingSoonMessage = document.createElement('div');
+        comingSoonMessage.className = 'coming-soon';
+        comingSoonMessage.innerHTML = `
+            <h3>Not Available Yet</h3>
+            <p>Projects for this category have not been posted yet. Exciting work is coming soon!</p>
+        `;
+    
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+    
+                const filter = button.dataset.filter;
+                let hasProjects = false;
+    
+                // Show/hide project cards based on filter
+                projectCards.forEach(card => {
+                    if (filter === 'all' || card.dataset.category === filter) {
+                        card.style.display = 'block';
+                        hasProjects = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+    
+                // Show/hide coming soon message
+                if (!hasProjects && filter !== 'all') {
+                    projectsContainer.innerHTML = '';
+                    projectsContainer.appendChild(comingSoonMessage);
+                } else if (filter === 'all') {
+                    projectsContainer.innerHTML = '';
+                    projectCards.forEach(card => projectsContainer.appendChild(card));
+                }
+            });
+        });
+    
     const nav = document.querySelector('nav');
     if (nav) {
         let lastScrollTop = 0;
@@ -518,25 +573,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setupScrollAnimations() {
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const elements = document.querySelectorAll('.mobile-scroll, .slide-left, .slide-right, .scroll-reveal, #home .profile-img, .box, .blog-link');
+        const elements = document.querySelectorAll(
+            '.mobile-scroll, .slide-left, .slide-right, .scroll-reveal, #home .profile-img, .box, .blog-link, #home .info-box h1, #home .info-box h3, #home .info-box p, #about .about-info p'
+        );
     
         if (prefersReducedMotion) {
             elements.forEach(el => el.classList.add('visible'));
             return;
         }
     
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                } else {
-                    entry.target.classList.remove('visible');
-                }
-            });
-        }, {
-            threshold: 0.1, // Adjusted for earlier trigger
-            rootMargin: '0px 0px -10% 0px' // Adjusted for smoother mobile experience
-        });
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // Optionally unobserve after visibility to prevent repeated animations
+                        // observer.unobserve(entry.target);
+                    } else {
+                        entry.target.classList.remove('visible');
+                    }
+                });
+            },
+            {
+                threshold: 0.1,
+                rootMargin: '0px 0px -10% 0px'
+            }
+        );
     
         window.updateObservers = debounce(() => {
             observer.disconnect();
@@ -547,6 +609,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setupScrollAnimations();
+
+    // New Scroll Reveal for Home Section Text
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const homeElements = document.querySelectorAll('#home .info-box h1, #home .info-box h3, #home .info-box p');
+    
+    if (!prefersReducedMotion) {
+        const homeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    homeObserver.unobserve(entry.target); // Stop observing once visible
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -10% 0px' // Match existing rootMargin for consistency
+        });
+
+        homeElements.forEach(element => {
+            homeObserver.observe(element);
+        });
+
+        // Integrate with existing updateObservers to handle dynamic content
+        const originalUpdateObservers = window.updateObservers;
+        window.updateObservers = debounce(() => {
+            originalUpdateObservers();
+            homeObserver.disconnect();
+            homeElements.forEach(element => homeObserver.observe(element));
+        }, 100);
+    } else {
+        homeElements.forEach(el => el.classList.add('visible')); // Show immediately if reduced motion
+    }
 
     if (localStorage.getItem('darkMode') === 'true') {
         document.body.classList.add('dark-mode');
@@ -721,90 +815,131 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Enter') handleChatbotInput();
         });
     }
+// news section code 
+if (cryptoNewsContainer) {
+    const fallbackData = [
+        { title: "Bitcoin Hits Record High", url: "https://example.com/bitcoin-news", image: "https://via.placeholder.com/300x200?text=Bitcoin+News", category: "Crypto" },
+        { title: "Premier League Transfer Rumors", url: "https://example.com/football-news", image: "https://via.placeholder.com/300x200?text=Football+News", category: "Sports" },
+        { title: "Global Climate Summit Updates", url: "https://example.com/world-news", image: "https://via.placeholder.com/300x200?text=World+News", category: "World" },
+        { title: "Ethereum ETF Approval", url: "https://example.com/ethereum-news", image: "https://via.placeholder.com/300x200?text=Ethereum+News", category: "Crypto" },
+        { title: "Champions League Highlights", url: "https://example.com/football-highlights", image: "https://via.placeholder.com/300x200?text=Football+Highlights", category: "Sports" },
+        { title: "Tech Stocks Surge", url: "https://example.com/tech-news", image: "https://via.placeholder.com/300x200?text=Tech+News", category: "Technology" },
+        { title: "Solana DeFi Growth", url: "https://example.com/solana-news", image: "https://via.placeholder.com/300x200?text=Solana+News", category: "Crypto" },
+        { title: "World Economy Outlook", url: "https://example.com/economy-news", image: "https://via.placeholder.com/300x200?text=Economy+News", category: "Economy" },
+        { title: "Blockchain Adoption Trends", url: "https://example.com/blockchain-news", image: "https://via.placeholder.com/300x200?text=Blockchain+News", category: "Crypto" }
+    ];
 
-    if (cryptoNewsContainer) {
-        const fallbackData = [
-            { title: "Bitcoin Hits Record High", url: "https://example.com/bitcoin-news", image: "https://via.placeholder.com/300x200?text=Bitcoin+News" },
-            { title: "Global Markets Rally", url: "https://example.com/market-news", image: "https://via.placeholder.com/300x200?text=Market+News" },
-            { title: "Tech Stocks Surge", url: "https://example.com/tech-news", image: "https://via.placeholder.com/300x200?text=Tech+News" }
-        ];
+    function renderItems(items, container) {
+        container.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+        items.slice(0, 9).forEach(item => {
+            const imageUrl = item.image || 'https://via.placeholder.com/300x200?text=News';
+            const newsItem = document.createElement('a');
+            newsItem.href = item.url;
+            newsItem.className = 'blog-link';
+            newsItem.target = '_blank';
+            newsItem.rel = 'noopener noreferrer';
+            newsItem.innerHTML = `
+                <div class="box mobile-scroll-content">
+                    <h1><span>${item.title || 'No Title'}</span></h1>
+                    <img src="${imageUrl}" alt="${item.title || 'News Item'}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=News';">
+                    <span class="category">${item.category || 'General'}</span>
+                    <span class="view-site">Read More <i class='bx bx-right-arrow-alt'></i></span>
+                </div>
+            `;
+            fragment.appendChild(newsItem);
+        });
+        container.appendChild(fragment);
+        container.classList.add('visible');
+        window.updateObservers && window.updateObservers();
+    }
 
-        function renderItems(items, container) {
-            container.innerHTML = '';
-            items.slice(0, 6).forEach(item => {
-                const imageUrl = item.image || 'https://via.placeholder.com/300x200?text=News';
-                const newsItem = document.createElement('a');
-                newsItem.href = item.url;
-                newsItem.className = 'blog-link';
-                newsItem.target = '_blank';
-                newsItem.rel = 'noopener noreferrer';
-                newsItem.innerHTML = `
-                    <div class="box">
-                        <h1><span>${item.title || 'No Title'}</span></h1>
-                        <img src="${imageUrl}" alt="${item.title || 'News Item'}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=News';">
-                        <span class="view-site">Read More <i class='bx bx-right-arrow-alt'></i></span>
-                    </div>
-                `;
-                container.appendChild(newsItem);
+    async function getUserCountry() {
+        try {
+            const position = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
             });
-            container.classList.add('loaded');
-            setTimeout(() => container.classList.remove('loaded'), 0);
-            window.updateObservers();
+            const { latitude, longitude } = position.coords;
+            const response = await fetch(`${API_CONFIG.geolocation.baseUrl}?q=${latitude}+${longitude}&key=${API_CONFIG.geolocation.apiKey}`, {
+                signal: AbortSignal.timeout(5000)
+            });
+            if (!response.ok) throw new Error('Geocoding API error');
+            const data = await response.json();
+            return data.results[0]?.components?.country_code?.toLowerCase() || 'us';
+        } catch (error) {
+            console.error('Error getting user location:', error);
+            return 'us';
         }
+    }
 
-        async function fetchNewsData() {
-            let newsItems = [];
-            const seenTitles = new Set();
-            const apiKey = '301671e3c0fd431bbaf3749bab72edf2';
-            const categories = ['business', 'technology'];
-            const maxPerCategory = 5;
+    async function fetchNewsData(retries = 3) {
+        cryptoNewsContainer.innerHTML = '<div class="loading-indicator">Loading news...</div>';
+        let newsItems = [];
+        const seenTitles = new Set();
+        const categories = ['business', 'sports', 'technology', 'general', 'entertainment'];
+        const maxPerCategory = 2;
+        const country = await getUserCountry();
 
+        for (let attempt = 0; attempt < retries; attempt++) {
             for (const category of categories) {
                 try {
-                    const response = await fetch(`https://newsapi.org/v2/top-headlines?category=${category}&language=en&apiKey=${apiKey}`, {
-                        headers: { 'Accept': 'application/json' },
-                        signal: AbortSignal.timeout(5000)
-                    });
+                    const response = await fetch(
+                        `${API_CONFIG.news.baseUrl}${API_CONFIG.news.endpoint}?country=${country}&category=${category}&apiKey=${API_CONFIG.news.apiKey}`,
+                        {
+                            headers: { 'Accept': 'application/json' },
+                            signal: AbortSignal.timeout(5000)
+                        }
+                    );
+                    if (response.status === 429) {
+                        if (attempt < retries - 1) {
+                            await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+                            continue;
+                        }
+                        throw new Error('Rate limit exceeded');
+                    }
                     if (!response.ok) throw new Error(`NewsAPI error: ${response.status}`);
                     const data = await response.json();
                     const articles = (data.articles || [])
-                        .filter(article => !seenTitles.has(article.title) && article.url && article.title)
+                        .filter(article => !seenTitles.has(article.title) && article.url && article.title && article.urlToImage)
                         .slice(0, maxPerCategory)
                         .map(article => {
                             seenTitles.add(article.title);
                             return {
                                 title: article.title,
                                 url: article.url,
-                                image: article.urlToImage || `https://via.placeholder.com/300x200?text=${category.charAt(0).toUpperCase() + category.slice(1)}`
+                                image: article.urlToImage,
+                                category: category.charAt(0).toUpperCase() + category.slice(1)
                             };
                         });
                     newsItems = [...newsItems, ...articles];
                 } catch (error) {
-                    console.error(`Error fetching ${category} news:`, error);
+                    console.error(`Error fetching ${category} news for ${country} (attempt ${attempt + 1}):`, error);
                 }
             }
-
-            if (newsItems.length < 6) {
-                const fallback = fallbackData
-                    .filter(item => !seenTitles.has(item.title))
-                    .slice(0, 6 - newsItems.length);
-                newsItems = [...newsItems, ...fallback];
-            }
-
-            renderItems(newsItems.slice(0, 6), cryptoNewsContainer);
+            if (newsItems.length >= 9) break;
         }
 
-        fetchNewsData().catch(() => renderItems(fallbackData.slice(0, 6), cryptoNewsContainer));
-
-        const refreshLink = document.getElementById('news-refresh');
-        if (refreshLink) {
-            refreshLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                fetchNewsData();
-            });
+        if (newsItems.length < 9) {
+            const fallback = fallbackData
+                .filter(item => !seenTitles.has(item.title))
+                .slice(0, 9 - newsItems.length);
+            newsItems = [...newsItems, ...fallback];
         }
+
+        renderItems(newsItems.slice(0, 9), cryptoNewsContainer);
     }
 
+    fetchNewsData().catch(() => renderItems(fallbackData.slice(0, 9), cryptoNewsContainer));
+
+    const refreshLink = document.getElementById('news-refresh');
+    if (refreshLink) {
+        refreshLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            fetchNewsData();
+        });
+    }
+}
+// tradingview code 
     if (tradingViewChart) {
         function initTradingViewChart() {
             const isMobile = window.innerWidth <= 768;
@@ -1064,7 +1199,38 @@ document.addEventListener('DOMContentLoaded', () => {
             if (textarea) textarea.focus();
         });
     }
+// Newsletter Form Submission
+const newsletterForm = document.querySelector('#newsletter-form');
+if (newsletterForm) {
+    newsletterForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(newsletterForm);
+        const formObject = {};
+        formData.forEach((value, key) => {
+            formObject[key] = value;
+        });
 
+        try {
+            const response = await fetch('https://formspree.io/f/xqabkwrp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(formObject),
+                signal: AbortSignal.timeout(5000)
+            });
+
+            if (response.ok) {
+                alert('Thank you for subscribing! You’ll receive updates soon.');
+                newsletterForm.reset();
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.error || 'Failed to subscribe. Please try again.'}`);
+            }
+        } catch (error) {
+            alert('An error occurred while subscribing. Please try again later.');
+            console.error('Newsletter submission error:', error);
+        }
+    });
+}
     window.addEventListener('load', () => {
         window.dispatchEvent(new Event('resize'));
     });
