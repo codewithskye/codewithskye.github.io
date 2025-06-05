@@ -270,6 +270,39 @@
             </div>
         </div>
     </section>
+    <section id="tools" class="mobile-scroll content-section">
+        <div class="coming-soon">
+            <h3><span>Tools</span></h3>
+            <p>A growing collection of handy online tools to make your work easier—coming soon:</p>
+            <ul>
+                <li>🔻 Image Compressor – Optimize images without losing quality</li>
+                <li>📄 Word to PDF Converter – Quickly convert DOC/DOCX files to PDF</li>
+                <li>🎥 Social Media Video Downloader – Save videos from popular platforms</li>
+                <li>➕ And more tools on the way...</li>
+            </ul>
+            <p><em>Note: This section is still a work in progress. Stay tuned for updates!</em></p> 
+            <p><em>Don't forget to subscribe to our newsletter at the bottom of the page to stay informed about new tools and features.</em></p>        </div>
+    </section>
+    <section id="image-compressor" class="mobile-scroll content-section">
+        <div class="projects-header">
+            <h1 class="header mobile-scroll"><span>Image Compressor</span></h1>
+        </div>
+        <div class="projects-container">
+            <div class="box mobile-scroll">
+                <h1><span>Compress Images</span></h1>
+                <p>Optimize JPEG/PNG images (Max 5MB each, multiple files supported).</p>
+                <div class="image-compressor">
+                    <div class="drop-zone" id="drop-zone">
+                        <i class='bx bx-cloud-upload'></i>
+                        <p>Drag and drop images here or click to upload. (Note: Full functionality is still in progress, but image upload is available.)</p>
+                        <input type="file" id="image-input" accept="image/jpeg,image/png" multiple hidden>
+                    </div>
+                    <button id="compress-btn" class="btn" disabled>Compress Images <i class='bx bx-compress'></i></button>
+                    <div id="compressor-result" class="compressor-result"></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- AI Chatbot Section -->
     <section id="ai-chatbot" class="content-section">
@@ -321,6 +354,27 @@
 
     <!-- Footer -->
     <footer class="mobile-scroll content-section">
+        <!-- Newsletter Subscription -->
+        <div class="newsletter-container mobile-scroll">
+            <h2 class="newsletter-heading"><span>Stay Updated</span></h2>
+            <p class="newsletter-subtext">Subscribe to my newsletter for the latest posts, projects, and tech insights!</p>
+            <form id="newsletter-form" action="https://formspree.io/f/xqabkwrp" method="POST" class="mobile-scroll">
+                <div class="input-box">
+                    <input type="email" name="email" placeholder="Your Email" required>
+                </div>
+                <button type="submit" class="btn">Subscribe <i class='bx bx-envelope'></i></button>
+                <div id="newsletter-feedback" class="newsletter-feedback">
+                    <div class="feedback-content">
+                        <div class="loader hidden"></div>
+                        <div class="success-message hidden">
+                            <i class='bx bx-check-circle'></i>
+                            <span>Successfully Subscribed!</span>
+                        </div>
+                        <div class="error-message hidden"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
         <div class="col-left">
             <div class="col-box">
                 <span><i class='bx bx-location-plus'></i></span>
