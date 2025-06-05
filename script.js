@@ -3,7 +3,7 @@ const API_CONFIG = {
         provider: "BlockCypher",
         baseUrl: "https://api.blockcypher.com/v1/btc/main",
         apiKey: null,
-        endpoint: "/addrs/{address}/full?limit=10", // Changed to /full for detailed transactions
+        endpoint: "/addrs/{address}?limit=10",
         coingeckoId: "bitcoin"
     },
     ethereum: {
@@ -16,8 +16,8 @@ const API_CONFIG = {
     bnb: {
         provider: "BscScan",
         baseUrl: "https://api.bscscan.com",
-        apiKey: "EJ9TNNRKE8GA9H2TW27WIJPVIMPW7CMVNV",
-        endpoint: "/api?module=account&action=txlist&address={address}&sort=desc&page=1&offset=10&apikey={apiKey}",
+        apiKey: "VKJMPXUPEGH316D4Z92FY9EE49DD2NWH7K",
+        endpoint: "/api?module=account&action=txlist&address={address}&sort=desc&page=1&offset=10",
         coingeckoId: "binancecoin"
     },
     ton: {
@@ -40,9 +40,9 @@ const API_CONFIG = {
         endpoint: "/events?date={date}¤cy={currency}"
     },
     news: {
-        provider: "NewsAPI",
-        baseUrl: "https://newsapi.org/v2",
-        apiKey: "564f407632a24f2a9d2f5747f2442bbc", // Your NewsAPI key
+        provider: "GNews",
+        baseUrl: "https://gnews.io/api/v4",
+        // apiKey: "4f22c2719a98d05aadb57665940b8c6a",
         endpoint: "/top-headlines"
     },
     geolocation: {
@@ -51,6 +51,8 @@ const API_CONFIG = {
         apiKey: "c3732fd755a0459f987b2eea2f46e906" // Your OpenCage API key
     }
 };
+
+const TINIFY_API_KEY = '7c2mD2Wvs1HzynnxzzZ6LWSKjtT3g8WH'; // Tinify API key
 
 // Mock Economic Calendar Data (Fallback)
 const economicEventsFallback = [
@@ -233,7 +235,7 @@ function validateAddress(crypto, address) {
     }
 }
 
-async function fetchTransactions(walletAddress, crypto, retries = 3, delay = 1000) {
+async function fetchTransactions(walletAddress, crypto, retries = 3, delay = 2000) {
     if (!validateAddress(crypto, walletAddress)) {
         throw new Error('Invalid wallet address format');
     }
@@ -245,58 +247,45 @@ async function fetchTransactions(walletAddress, crypto, retries = 3, delay = 100
         try {
             const config = API_CONFIG[crypto];
             let url = `${config.baseUrl}${config.endpoint.replace('{address}', encodeURIComponent(walletAddress))}`;
-            if (config.apiKey) {
+            let options = { method: 'GET', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } };
+
+            if (crypto === 'ethereum') {
                 url = url.replace('{apiKey}', config.apiKey);
+            } else if (crypto === 'bnb') {
+                url += `&apikey=${config.apiKey}`;
+            } else if (crypto === 'ton') {
+                options.headers['Accept'] = 'application/json';
             }
-            const options = { 
-                method: 'GET', 
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Accept': 'application/json',
-                    ...(config.apiKey && config.provider === 'TONCenter' ? { 'X-API-Key': config.apiKey } : {})
-                }
-            };
 
             const response = await fetch(url, {
                 ...options,
                 signal: AbortSignal.timeout(5000)
             });
-
             if (response.status === 429) {
                 console.warn(`Rate limit hit for ${crypto}, attempt ${attempt}/${retries}`);
-                if (attempt === retries) throw new Error('Rate limit exceeded. Please try again later.');
+                if (attempt === retries) throw new Error('Rate limit exceeded');
                 await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, attempt)));
                 continue;
             }
-
             if (!response.ok) {
                 const text = await response.text();
-                console.error(`Explorer error for ${crypto}: Status ${response.status}, Response: ${text}`);
-                throw new Error(`Failed to fetch transactions: ${response.status} - ${text}`);
+                console.error(`API error for ${crypto}: Status ${response.status}, Response: ${text}`);
+                throw new Error(`API error: ${response.status}`);
             }
-
             const data = await response.json();
-            let transactions = [];
+            console.log(`Fetched data for ${crypto}:`, data);
 
-            if (crypto === 'bitcoin') {
-                // Handle both txs and txrefs for Bitcoin
-                transactions = (data.txs || data.txrefs || []).slice(0, 10);
-                console.log('Bitcoin API response:', data); // Debug log
-            } else if (crypto === 'ethereum' || crypto === 'bnb') {
+            let transactions = data;
+            if (crypto === 'ethereum' || crypto === 'bnb') {
                 transactions = data.result || [];
-            } else if (crypto === 'ton') {
-                transactions = data.transactions || [];
             }
 
-            if (!transactions || transactions.length === 0) {
-                return { data: [], price: await fetchCryptoPrice(config.coingeckoId) };
-            }
-
-            return { data: transactions, price: await fetchCryptoPrice(config.coingeckoId) };
+            const price = await fetchCryptoPrice(config.coingeckoId);
+            return { data: transactions, price };
         } catch (error) {
             if (attempt === retries) {
                 console.error(`Failed to fetch ${crypto} transactions after ${retries} attempts:`, error.message);
-                return { data: mockTransactions[crypto] || [], price: await fetchCryptoPrice(API_CONFIG[crypto].coingeckoId) };
+                throw error;
             }
         }
     }
@@ -325,20 +314,19 @@ function renderTransactions({ data, price }, crypto, container) {
 
     try {
         if (crypto === 'bitcoin') {
-            transactions = (data || [])
+            transactions = (data.txrefs || [])
                 .filter(tx => {
-                    const txId = tx.hash || tx.tx_hash; // Handle both hash and tx_hash
-                    if (seenTxIds.has(txId)) return false;
-                    seenTxIds.add(txId);
+                    if (seenTxIds.has(tx.tx_hash) || !tx.confirmed) return false;
+                    seenTxIds.add(tx.tx_hash);
                     return true;
                 })
                 .map(tx => ({
-                    txId: tx.hash || tx.tx_hash || 'N/A',
-                    amount: tx.total ? tx.total / 1e8 : (tx.value ? tx.value / 1e8 : 'N/A'), // Handle value for txrefs
-                    amountUsd: tx.total && price ? (tx.total / 1e8 * price).toFixed(2) : (tx.value && price ? (tx.value / 1e8 * price).toFixed(2) : 'N/A'),
-                    time: tx.received ? formatTimestamp(new Date(tx.received).getTime() / 1000) : (tx.block_time ? formatTimestamp(new Date(tx.block_time).getTime() / 1000) : 'Pending'),
-                    confirmations: tx.confirmations || (tx.confirmed ? 'Confirmed' : '0'),
-                    txLink: `https://blockcypher.com/btc/tx/${tx.hash || tx.tx_hash}`, // Fixed to use correct txId
+                    txId: tx.tx_hash,
+                    amount: tx.value ? tx.value / 1e8 : 'N/A',
+                    amountUsd: tx.value && price ? (tx.value / 1e8 * price).toFixed(2) : 'N/A',
+                    time: tx.confirmed ? formatTimestamp(new Date(tx.confirmed).getTime() / 1000) : 'Pending',
+                    confirmations: tx.confirmations || '0',
+                    txLink: `https://live.blockcypher.com/btc/tx/${tx.tx_hash}`,
                     unit: 'BTC'
                 }));
         } else if (crypto === 'ethereum') {
@@ -423,7 +411,7 @@ function renderTransactions({ data, price }, crypto, container) {
         container.appendChild(table);
     } catch (error) {
         console.error(`Error rendering ${crypto} transactions:`, error);
-        container.innerHTML = '<p>Error processing transaction data. Please check your API keys or try again later.</p>';
+        container.innerHTML = '<p>Error processing transaction data. Please try again later</p>';
     }
 }
 
@@ -686,26 +674,41 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleMenu(false);
         });
 
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', (e) => {
-                const href = link.getAttribute('href');
-                navLinks.classList.remove('active');
-                menuClose.style.display = 'none';
-                menuOpen.style.display = 'block';
-                toggleMenu(false);
+// Active Nav Link Functionality
+const links = document.querySelectorAll('nav ul.links a');
+const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-                if (href.startsWith('#')) {
-                    e.preventDefault();
-                    const targetId = href.substring(1);
-                    const targetElement = document.getElementById(targetId);
-                    if (targetElement) {
-                        const navHeight = nav.offsetHeight;
-                        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight;
-                        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-                    }
-                }
-            });
-        });
+links.forEach(link => {
+    const href = link.getAttribute('href');
+    if (href === currentPage) {
+        link.classList.add('active');
+    } else {
+        link.classList.remove('active');
+    }
+
+    link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        navLinks.classList.remove('active');
+        menuClose.style.display = 'none';
+        menuOpen.style.display = 'block';
+        toggleMenu(false);
+
+        // Update active class on click
+        links.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+
+        if (href.startsWith('#')) {
+            e.preventDefault();
+            const targetId = href.substring(1);
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                const navHeight = nav.offsetHeight;
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight;
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+            }
+        }
+    });
+});
 
         window.addEventListener('resize', debounce(() => {
             if (window.innerWidth > 968) {
@@ -879,12 +882,12 @@ if (cryptoNewsContainer) {
         const categories = ['business', 'sports', 'technology', 'general', 'entertainment'];
         const maxPerCategory = 2;
         const country = await getUserCountry();
-
+    
         for (let attempt = 0; attempt < retries; attempt++) {
             for (const category of categories) {
                 try {
                     const response = await fetch(
-                        `${API_CONFIG.news.baseUrl}${API_CONFIG.news.endpoint}?country=${country}&category=${category}&apiKey=${API_CONFIG.news.apiKey}`,
+                        `${API_CONFIG.news.baseUrl}${API_CONFIG.news.endpoint}?category=${category}&lang=en&country=${country}&max=${maxPerCategory}&apikey=${API_CONFIG.news.apiKey}`,
                         {
                             headers: { 'Accept': 'application/json' },
                             signal: AbortSignal.timeout(5000)
@@ -897,17 +900,17 @@ if (cryptoNewsContainer) {
                         }
                         throw new Error('Rate limit exceeded');
                     }
-                    if (!response.ok) throw new Error(`NewsAPI error: ${response.status}`);
+                    if (!response.ok) throw new Error(`GNews API error: ${response.status}`);
                     const data = await response.json();
                     const articles = (data.articles || [])
-                        .filter(article => !seenTitles.has(article.title) && article.url && article.title && article.urlToImage)
+                        .filter(article => !seenTitles.has(article.title) && article.url && article.title && article.image)
                         .slice(0, maxPerCategory)
                         .map(article => {
                             seenTitles.add(article.title);
                             return {
                                 title: article.title,
                                 url: article.url,
-                                image: article.urlToImage,
+                                image: article.image,
                                 category: category.charAt(0).toUpperCase() + category.slice(1)
                             };
                         });
@@ -918,14 +921,14 @@ if (cryptoNewsContainer) {
             }
             if (newsItems.length >= 9) break;
         }
-
+    
         if (newsItems.length < 9) {
             const fallback = fallbackData
                 .filter(item => !seenTitles.has(item.title))
                 .slice(0, 9 - newsItems.length);
             newsItems = [...newsItems, ...fallback];
         }
-
+    
         renderItems(newsItems.slice(0, 9), cryptoNewsContainer);
     }
 
@@ -986,7 +989,7 @@ if (cryptoNewsContainer) {
                 cryptoList = await response.json();
             } catch (error) {
                 console.error('Error fetching crypto list:', error);
-                calculatorResult.innerHTML = '<span>Error loading cryptocurrency list. Please try again later.</span>';
+                calculatorResult.innerHTML = '<span>Error loading cryptocurrency list. Please refresh your browser or try again later, Thank You.</span>';
                 calculatorResult.classList.add('error');
             }
         }
@@ -1200,37 +1203,300 @@ if (cryptoNewsContainer) {
         });
     }
 // Newsletter Form Submission
-const newsletterForm = document.querySelector('#newsletter-form');
-if (newsletterForm) {
+const newsletterForm = document.getElementById('newsletter-form');
+const feedbackDiv = document.getElementById('newsletter-feedback');
+
+if (newsletterForm && feedbackDiv) {
+    const loader = feedbackDiv.querySelector('.loader');
+    const successMessage = feedbackDiv.querySelector('.success-message');
+    const errorMessage = feedbackDiv.querySelector('.error-message');
+
+    // Initialize feedback elements to ensure they are hidden
+    const initializeFeedback = () => {
+        console.log('[Newsletter] Initializing feedback');
+        if (loader) {
+            loader.classList.add('hidden');
+            console.log('[Newsletter] Loader hidden:', loader.classList.contains('hidden'));
+        }
+        if (successMessage) {
+            successMessage.classList.add('hidden');
+            console.log('[Newsletter] Success message hidden:', successMessage.classList.contains('hidden'));
+        }
+        if (errorMessage) {
+            errorMessage.classList.add('hidden');
+            errorMessage.textContent = '';
+            console.log('[Newsletter] Error message hidden:', errorMessage.classList.contains('hidden'));
+        }
+        const submitButton = newsletterForm.querySelector('button[type="submit"]');
+        if (submitButton) submitButton.disabled = false;
+    };
+
+    // Run initialization immediately
+    initializeFeedback();
+
+    // Run initialization on DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('[Newsletter] DOM fully loaded, re-running initializeFeedback');
+        initializeFeedback();
+    });
+
+    // Form submission handler
     newsletterForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const formData = new FormData(newsletterForm);
-        const formObject = {};
-        formData.forEach((value, key) => {
-            formObject[key] = value;
-        });
+        console.log('[Newsletter] Form submitted');
+        const submitButton = newsletterForm.querySelector('button[type="submit"]');
+        const emailInput = newsletterForm.querySelector('input[name="email"]');
+        console.log('[Newsletter] Email value:', emailInput ? emailInput.value : 'No email input');
+
+        // Reset feedback states
+        initializeFeedback();
+        if (loader) {
+            loader.classList.remove('hidden');
+            console.log('[Newsletter] Loader shown');
+        }
+        if (submitButton) submitButton.disabled = true;
 
         try {
+            const formData = new FormData(newsletterForm);
+            console.log('[Newsletter] Form data:', Object.fromEntries(formData));
             const response = await fetch('https://formspree.io/f/xqabkwrp', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify(formObject),
+                body: formData,
+                headers: { 'Accept': 'application/json' },
                 signal: AbortSignal.timeout(5000)
             });
 
+            console.log('[Newsletter] Response status:', response.status, response.ok);
+            if (loader) {
+                loader.classList.add('hidden');
+                console.log('[Newsletter] Loader hidden after response');
+            }
+
             if (response.ok) {
-                alert('Thank you for subscribing! You’ll receive updates soon.');
+                console.log('[Newsletter] Submission successful');
+                if (successMessage) {
+                    successMessage.classList.remove('hidden');
+                    console.log('[Newsletter] Success message shown:', !successMessage.classList.contains('hidden'));
+                    console.log('[Newsletter] Success message styles:', getComputedStyle(successMessage).display);
+                    // Force reflow to trigger animation
+                    successMessage.offsetHeight;
+                } else {
+                    console.error('[Newsletter] Success message element not found');
+                }
                 newsletterForm.reset();
+                setTimeout(() => {
+                    console.log('[Newsletter] Hiding success message after 5 seconds');
+                    initializeFeedback();
+                }, 5000);
             } else {
                 const errorData = await response.json();
-                alert(`Error: ${errorData.error || 'Failed to subscribe. Please try again.'}`);
+                console.error('[Newsletter] Response error:', errorData);
+                throw new Error(errorData.error || `HTTP ${response.status}`);
             }
         } catch (error) {
-            alert('An error occurred while subscribing. Please try again later.');
-            console.error('Newsletter submission error:', error);
+            console.error('[Newsletter] Submission error:', error.message);
+            if (loader) {
+                loader.classList.add('hidden');
+                console.log('[Newsletter] Loader hidden after error');
+            }
+            if (errorMessage) {
+                errorMessage.textContent = 'Failed to subscribe. Please try again.';
+                errorMessage.classList.remove('hidden');
+                console.log('[Newsletter] Error message shown');
+            } else {
+                console.error('[Newsletter] Error message element not found');
+            }
+            if (submitButton) submitButton.disabled = false;
         }
     });
+
+    // Handle manual form reset
+    newsletterForm.addEventListener('reset', () => {
+        console.log('[Newsletter] Form reset manually');
+        initializeFeedback();
+    });
 }
+    // Image Compressor Functionality
+    const dropZone = document.getElementById('drop-zone');
+    const imageInput = document.getElementById('image-input');
+    const compressBtn = document.getElementById('compress-btn');
+    const compressorResult = document.getElementById('compressor-result');
+    let selectedFiles = [];
+
+    if (dropZone && imageInput && compressBtn && compressorResult) {
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log(`Event triggered: ${eventName}`);
+            }, false);
+        });
+
+        // Highlight drop zone on drag
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.add('active');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.remove('active');
+            }, false);
+        });
+
+        // Handle dropped files
+        dropZone.addEventListener('drop', (e) => {
+            console.log('Files dropped:', e.dataTransfer.files);
+            const files = Array.from(e.dataTransfer.files).filter(file => 
+                ['image/jpeg', 'image/png'].includes(file.type) && file.size <= 5 * 1024 * 1024
+            );
+            handleFiles(files);
+        });
+
+        // Handle file input selection
+        imageInput.addEventListener('change', (e) => {
+            console.log('Files selected via input:', e.target.files);
+            const files = Array.from(e.target.files).filter(file => 
+                ['image/jpeg', 'image/png'].includes(file.type) && file.size <= 5 * 1024 * 1024
+            );
+            handleFiles(files);
+            e.target.value = ''; 
+        });
+
+        // Trigger file input on drop zone click
+        dropZone.addEventListener('click', () => {
+            console.log('Drop zone clicked');
+            imageInput.click();
+        });
+
+        function handleFiles(files) {
+            console.log('Handling files:', files);
+            if (files.length === 0) {
+                compressorResult.innerHTML = '<p class="error">Please select valid JPEG/PNG images (max 5MB each).</p>';
+                compressBtn.disabled = true;
+                return;
+            }
+            selectedFiles = [...selectedFiles, ...files];
+            compressBtn.disabled = selectedFiles.length === 0;
+            renderFileList();
+        }
+
+        function renderFileList() {
+            compressorResult.innerHTML = '';
+            if (selectedFiles.length === 0) return;
+            const ul = document.createElement('ul');
+            ul.className = 'file-list';
+            selectedFiles.forEach((file, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${file.name} (${(file.size / 1024).toFixed(2)} KB)</span>
+                    <i class='bx bx-trash' data-index="${index}"></i>
+                `;
+                ul.appendChild(li);
+            });
+            compressorResult.appendChild(ul);
+
+            ul.querySelectorAll('.bx-trash').forEach(trash => {
+                trash.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.dataset.index);
+                    selectedFiles.splice(index, 1);
+                    compressBtn.disabled = selectedFiles.length === 0;
+                    renderFileList();
+                });
+            });
+        }
+
+        async function compressImages() {
+            if (selectedFiles.length === 0) return;
+            compressorResult.innerHTML = '<p>Compressing images...</p>';
+            compressBtn.disabled = true;
+            const results = [];
+            const maxRetries = 3;
+
+            for (const file of selectedFiles) {
+                let attempt = 0;
+                let success = false;
+
+                while (attempt < maxRetries && !success) {
+                    attempt++;
+                    try {
+                        console.log(`Compressing ${file.name}, attempt ${attempt}`);
+                        const response = await fetch('https://api.tinify.com/shrink', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Basic ${btoa(`api:${TINIFY_API_KEY}`)}`,
+                                'Content-Type': file.type
+                            },
+                            body: file,
+                            signal: AbortSignal.timeout(10000)
+                        });
+
+                        if (!response.ok) {
+                            if (response.status === 429) {
+                                throw new Error('Tinify API rate limit exceeded (500 compressions/month).');
+                            }
+                            const errorData = await response.json();
+                            throw new Error(errorData.message || 'Compression failed.');
+                        }
+
+                        const data = await response.json();
+                        const compressedUrl = data.output.url;
+                        const originalSize = file.size;
+                        const compressedSize = data.output.size;
+
+                        const compressedResponse = await fetch(compressedUrl);
+                        const compressedBlob = await compressedResponse.blob();
+                        const compressedFileName = file.name.replace(/\.[^/.]+$/, '_compressed.png');
+                        const compressedFile = new File([compressedBlob], compressedFileName, { type: compressedBlob.type });
+
+                        results.push({
+                            fileName: compressedFileName,
+                            originalSize,
+                            compressedSize,
+                            compressedBlob,
+                            downloadUrl: URL.createObjectURL(compressedBlob)
+                        });
+                        success = true;
+                    } catch (error) {
+                        console.error(`Error compressing ${file.name}, attempt ${attempt}:`, error);
+                        if (attempt === maxRetries) {
+                            results.push({
+                                fileName: file.name,
+                                error: error.message
+                            });
+                        } else {
+                            await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+                        }
+                    }
+                }
+            }
+
+            compressorResult.innerHTML = results.map(result => {
+                if (result.error) {
+                    return `<p class="error">Error compressing ${result.fileName}: ${result.error}</p>`;
+                }
+                return `
+                    <div class="compression-result">
+                        <p><strong>${result.fileName}</strong></p>
+                        <p>Original Size: ${(result.originalSize / 1024).toFixed(2)} KB</p>
+                        <p>Compressed Size: ${(result.compressedSize / 1024).toFixed(2)} KB</p>
+                        <p>Reduction: ${((1 - result.compressedSize / result.originalSize) * 100).toFixed(2)}%</p>
+                        <a href="${result.downloadUrl}" download="${result.fileName}" class="btn download-btn">Download <i class='bx bx-download'></i></a>
+                    </div>
+                `;
+            }).join('');
+
+            selectedFiles = [];
+            compressBtn.disabled = true;
+        }
+
+        compressBtn.addEventListener('click', compressImages);
+    } else {
+        console.error('Image Compressor elements not found');
+    }
+
     window.addEventListener('load', () => {
         window.dispatchEvent(new Event('resize'));
     });
