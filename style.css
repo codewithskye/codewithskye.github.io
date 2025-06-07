@@ -908,6 +908,7 @@ body.dark-mode .view-site {
     line-height: 1.6;
     color: var(--text-color);
     opacity: 0.9;
+    margin-bottom: 1em; 
 }
 
 .see-more {
@@ -3577,8 +3578,9 @@ body.dark-mode .filter-btn:focus {
         font-size: 0.95em;
     }
 
-    #projects.projects-page .project-description {
+#projects.projects-page .project-description {
         font-size: 0.8em;
+        margin-bottom: 0.8em;
     }
 
     .project-card img, .blog-link img {
