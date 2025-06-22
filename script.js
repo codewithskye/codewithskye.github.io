@@ -42,7 +42,7 @@ const API_CONFIG = {
     news: {
         provider: "GNews",
         baseUrl: "https://gnews.io/api/v4",
-        // apiKey: "4f22c2719a98d05aadb57665940b8c6a",
+        apiKey: "4f22c2719a98d05aadb57665940b8c6a",
         endpoint: "/top-headlines"
     },
     geolocation: {
@@ -632,21 +632,6 @@ document.addEventListener('DOMContentLoaded', () => {
             icon.className = 'bx bx-sun';
         });
     }
-
-    // Popup and Time Update
-    // const greetingPopup = document.querySelector('#greetingPopup');
-    // const closePopup = document.querySelector('#closePopup');
-    // if (greetingPopup && closePopup) {
-    //     setTimeout(() => {
-    //         greetingPopup.classList.add('visible');
-    //     }, 2000);
-    //     closePopup.addEventListener('click', () => {
-    //         greetingPopup.classList.remove('visible');
-    //     });
-    //     updateLocalTime();
-    //     setInterval(updateLocalTime, 1000);
-    // }
-
     // Dark Mode Toggle
     document.querySelectorAll('.mode-toggle').forEach(toggle => {
         toggle.addEventListener('click', toggleDarkMode);
@@ -1647,9 +1632,9 @@ if (pdfDropZone && pdfInput && convertBtn && converterResult) {
                 email: email,
                 message: `Dear ${name},\n\nThank you for visiting my portfolio today at codewithskye.github.io! I look forward to the opportunity to work with you in the near future. Please kindly refer me to friends, family, or any company you know that may need my services.\n\nBest regards,\nSkye`
             };
-            // https://formspree.io/f/xpwrjqpp
+            
             try {
-                const response = await fetch('https://formspree', {
+                const response = await fetch('https://formspree.io/f/xpwrjqpp', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify(emailContent),
@@ -1894,6 +1879,3 @@ if (pdfDropZone && pdfInput && convertBtn && converterResult) {
         window.dispatchEvent(new Event('resize'));
     });
 });
-
-
-
