@@ -496,11 +496,9 @@ body.dark-mode .btn.nav-btn:focus {
 
 
 .btn {
-    padding: 0.6em 1em;
-    border-radius: 50px;
+    padding: clamp(0.5em, 2vw, 0.7em) clamp(1em, 3vw, 1.2em);    border-radius: 50px;
     border: none; /* Remove border entirely */
-    font-size: 1em;
-    font-weight: 300;
+    font-size: clamp(0.9em, 3vw, 1em);    font-weight: 300;
     letter-spacing: 1px;
     background: var(--primary-color);
     color: white;
@@ -511,7 +509,8 @@ body.dark-mode .btn.nav-btn:focus {
     justify-content: center;
     text-align: center;
     position: relative;
-    outline: none; 
+    outline: none;
+    touch-action: manipulation;
 }
 
 .btn:hover {
@@ -853,6 +852,7 @@ body.dark-mode .continue-reading:hover {
 .progress-bar {
     flex: 1;
     height: 10px;
+    max-width: 100%;
     background-color: #e0e0e0;
     border-radius: 5px;
     overflow: hidden;
@@ -906,11 +906,12 @@ body.dark-mode .continue-reading:hover {
 
 .projects-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(250px, 80vw, 280px), 1fr));
+    gap: clamp(12px, 3vw, 16px);
     max-width: 1200px;
     margin: 0 auto;
-    overflow: hidden; 
+    padding: 0 1em; /* Add padding to prevent edge clipping */
+    box-sizing: border-box;
 }
 .project-card {
     max-width: 100%;
@@ -1905,6 +1906,86 @@ body.dark-mode #crypto-calculator .calculator-result {
     background: none;
     -webkit-background-clip: initial;
 }
+
+/* Crypto Calculator Token Details */
+#crypto-calculator .token-details {
+    margin-top: 1.5em;
+    padding: 1em;
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+#crypto-calculator .token-details h3 {
+    font-size: 1.2em;
+    font-weight: 500;
+    margin-bottom: 0.8em;
+}
+
+#crypto-calculator .token-details p {
+    font-size: 0.9em;
+    color: var(--text-color);
+    opacity: 0.9;
+    margin: 0.3em 0;
+}
+
+/* Crypto Calculator Price Chart */
+#crypto-calculator .price-chart {
+    margin-top: 1.5em;
+    padding: 1em;
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#crypto-calculator .price-chart h3 {
+    font-size: 1.2em;
+    font-weight: 500;
+    margin-bottom: 0.8em;
+}
+
+#crypto-calculator .price-chart canvas {
+    width: 100% !important;
+    height: 200px !important;
+}
+
+/* WhatsApp Button */
+#crypto-calculator .whatsapp-btn {
+    margin-top: 1em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+/* Loading Indicator */
+#crypto-calculator .loading-indicator {
+    text-align: center;
+    padding: 1em;
+}
+.promo-container {
+    text-align: center;
+    font-size: 1rem;
+    color: #333;
+  }
+  .whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 2px solid #25D366;
+    color: #25D366;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  .whatsapp-btn:hover {
+    background-color: #25D366;
+    color: white;
+  }
+  .bx.bxl-whatsapp {
+    font-size: 1.5rem;
+}
+
 .error {
     color: red;
     font-weight: bold;
@@ -3570,10 +3651,10 @@ body.dark-mode #converter-result .loading {
     }
 
     .projects-container {
+        grid-template-columns: repeat(auto-fit, minmax(clamp(200px, 75vw, 250px), 1fr));
         gap: 1em;
-        display: grid; /* Ensure grid is active */
+        padding: 0 0.8em;
     }
-
     .faq-container {
         gap: 1em;
     }
@@ -3914,6 +3995,35 @@ body.dark-mode #converter-result .loading {
         padding: 0.6em;
     }
 
+    #crypto-calculator .token-details {
+        padding: 0.8em;
+    }
+
+    #crypto-calculator .token-details h3 {
+        font-size: 1.1em;
+    }
+
+    #crypto-calculator .token-details p {
+        font-size: 0.85em;
+    }
+
+    #crypto-calculator .price-chart {
+        padding: 0.8em;
+    }
+
+    #crypto-calculator .price-chart h3 {
+        font-size: 1.1em;
+    }
+
+    #crypto-calculator .price-chart canvas {
+        height: 150px !important;
+    }
+
+    #crypto-calculator .whatsapp-btn {
+        font-size: 0.9em;
+        padding: 0.6em 1.2em;
+    }
+
     #crypto-news .box h1 {
         font-size: 0.9rem;
     }
@@ -4170,8 +4280,9 @@ body.dark-mode #converter-result .loading {
     }
 
     .projects-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; 
         gap: 0.8em;
+        padding: 0 0.5em;
     }
 
     #projects.projects-page .projects-container {
@@ -4321,7 +4432,6 @@ body.dark-mode #converter-result .loading {
         width: 100%; 
         z-index: 10; 
     }
-
     #crypto-calculator .calculator-container {
         padding: 0.8em;
     }
@@ -4351,6 +4461,34 @@ body.dark-mode #converter-result .loading {
         padding: 0.6em;
     }
 
+    #crypto-calculator .token-details {
+        padding: 0.6em;
+    }
+
+    #crypto-calculator .token-details h3 {
+        font-size: 1em;
+    }
+
+    #crypto-calculator .token-details p {
+        font-size: 0.8em;
+    }
+
+    #crypto-calculator .price-chart {
+        padding: 0.6em;
+    }
+
+    #crypto-calculator .price-chart h3 {
+        font-size: 1em;
+    }
+
+    #crypto-calculator .price-chart canvas {
+        height: 120px !important;
+    }
+
+    #crypto-calculator .whatsapp-btn {
+        font-size: 0.85em;
+        padding: 0.5em 1em;
+    }
     #crypto-news .projects-container {
         grid-template-columns: 1fr;
     }
