@@ -1973,7 +1973,7 @@ document.addEventListener('DOMContentLoaded', () => {
     promoContainer.className = 'promo-container';
     promoContainer.style.marginTop = '20px';
     promoContainer.innerHTML = `
-      <p>Do you want to buy or sell any cryptocurrency, visit SkyExchange.</p>
+      <p>Looking to buy or sell cryptocurrency? Reach out to SkyeXchange. We're here to help!</p>
       <a href="https://wa.me/+2347016794490" target="_blank" class="btn outline whatsapp-btn">
         Contact via WhatsApp <i class="bx bxl-whatsapp"></i>
       </a>
