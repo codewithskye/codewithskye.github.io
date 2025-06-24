@@ -20,7 +20,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <script defer src="js/crypto-calculator.js"></script>
+    <script defer src="js/transaction-tracker.js"></script>
+    <script defer src="js/main.js"></script>
+    <script defer src="https://s3.tradingview.com/tv.js"></script>
+    <link rel="preload" href="https://s3.tradingview.com/tv.js" as="script">
     <script src="js/script.js" defer></script>
+</head>
 <body class="technexus-page">
         <!-- Greeting Popup -->
     <div class="greeting-popup" id="greetingPopup">
@@ -188,40 +196,57 @@
             </div>
         </div>
     </section>
-
+    
     <!-- Crypto Calculator Section -->
     <section id="crypto-calculator" class="mobile-scroll content-section">
         <div class="projects-header">
             <h1 class="header mobile-scroll"><span>Crypto Calculator</span></h1>
         </div>
         <div class="projects-container">
-            <div class="box mobile-scroll">
+            <div class="box mobile-scroll calculator-container">
                 <h1><span>Convert Cryptocurrency</span></h1>
-                <div class="calculator-container">
-                    <div class="calculator-inputs">
-                        <div class="input-group">
-                            <label for="crypto-search"><span>Cryptocurrency</span></label>
-                            <input type="text" id="crypto-search" placeholder="Search for a cryptocurrency (e.g., Bitcoin)">
-                            <ul id="crypto-suggestions" class="suggestions-list"></ul>
-                        </div>
-                        <div class="input-group">
-                            <label for="crypto-amount"><span>Amount</span></label>
-                            <input type="number" id="crypto-amount" placeholder="e.g., 0.0001" step="0.00000001" min="0">
-                        </div>
-                        <div class="input-group">
-                            <label for="currency-select"><span>Currency</span></label>
-                            <select id="currency-select">
-                                <option value="usd">USD</option>
-                                <option value="eur">EUR</option>
-                                <option value="gbp">GBP</option>
-                                <option value="jpy">JPY</option>
-                                <option value="aud">AUD</option>
-                                <option value="ngn">NGN</option>
-                            </select>
-                        </div>
+                <div class="calculator-inputs">
+                    <div class="input-group">
+                        <label for="crypto-select"><span>Select Cryptocurrency</span></label>
+                        <input type="text" id="crypto-select" placeholder="Search for a cryptocurrency..." autocomplete="off">
+                        <ul id="crypto-suggestions" class="suggestions-list"></ul>
                     </div>
-                    <button id="calculate-btn" class="btn">Calculate <i class='bx bx-calculator'></i></button>
-                    <div id="calculator-result" class="calculator-result"></div>
+                    <div class="input-group">
+                        <label for="amount"><span>Amount</span></label>
+                        <input type="number" id="amount" placeholder="Enter amount" step="any" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="currency-select"><span>Fiat Currency</span></label>
+                        <select id="currency-select">
+                            <option value="usd">USD</option>
+                            <option value="ngn">NGN</option>
+                            <option value="eur">EUR</option>
+                            <option value="gbp">GBP</option>
+                            <option value="jpy">JPY</option>
+                            <option value="aud">AUD</option>
+                            <option value="cad">CAD</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="calculate-btn" class="btn">Calculate <i class="bx bx-calculator"></i></button>
+                <div id="calculator-result" class="calculator-result"></div>
+                <div id="token-details" class="token-details" style="display: none;">
+                    <h3><span>Token Details</span></h3>
+                    <p id="token-name"></p>
+                    <p id="token-symbol"></p>
+                    <p id="token-price"></p>
+                    <p id="token-market-cap"></p>
+                    <p id="token-volume"></p>
+                    <p id="token-change"></p>
+                    <p id="token-creation-date"></p>
+                    <p id="token-owner"></p>
+                </div>
+                <div id="price-chart" class="price-chart" style="display: none;">
+                    <h3><span>Price Chart (7 Days)</span></h3>
+                    <div id="tradingview-chart"></div>
+                </div>
+                <div id="loading-indicator" class="loading-indicator" style="display: none;">
+                    <div class="loader"></div>
                 </div>
             </div>
         </div>
@@ -247,7 +272,7 @@
                                 <option value="bitcoin">Bitcoin (BTC)</option>
                                 <option value="ethereum">Ethereum (ETH)</option>
                                 <option value="bnb">BNB (BNB)</option>
-                                <option value="ton">TON (TON)</option>
+                                <!-- <option value="ton">TON (TON)</option> -->
                             </select>
                         </div>
                     </div>
@@ -349,9 +374,6 @@
             </div>
         </div>
     </section>
-
-
-
 
         <!-- QR Code Section -->
         <section class="qr-code-section mobile-scroll content-section">
