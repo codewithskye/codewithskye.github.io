@@ -632,6 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
             icon.className = 'bx bx-sun';
         });
     }
+
     // Dark Mode Toggle
     document.querySelectorAll('.mode-toggle').forEach(toggle => {
         toggle.addEventListener('click', toggleDarkMode);
@@ -925,132 +926,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(initTradingViewChart, 100);
         }
     }
-
-    // Crypto Calculator
-    const cryptoSearch = document.getElementById('crypto-search');
-    const suggestionsList = document.getElementById('crypto-suggestions');
-    const cryptoAmount = document.getElementById('crypto-amount');
-    const currencySelect = document.getElementById('currency-select');
-    const calculateBtn = document.getElementById('calculate-btn');
-    const calculatorResult = document.getElementById('calculator-result');
-    if (cryptoSearch && suggestionsList && cryptoAmount && currencySelect && calculateBtn && calculatorResult) {
-        let cryptoList = [];
-        let selectedCrypto = null;
-        const popularCryptos = ['bitcoin', 'ethereum', 'solana', 'cardano', 'binancecoin', 'ripple', 'dogecoin', 'polkadot', 'avalanche-2', 'chainlink'];
-
-        async function fetchCryptoList() {
-            try {
-                const response = await fetch('https://api.coingecko.com/api/v3/coins/list', { signal: AbortSignal.timeout(5000) });
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                cryptoList = await response.json();
-            } catch (error) {
-                console.error('Error fetching crypto list:', error);
-                calculatorResult.innerHTML = '<span>Error loading cryptocurrency list. Please refresh your browser or try again later, Thank You.</span>';
-                calculatorResult.classList.add('error');
-            }
-        }
-
-        function formatNumber(number, decimals = 2) {
-            return number.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        }
-
-        const showSuggestions = debounce((query) => {
-            suggestionsList.innerHTML = '';
-            suggestionsList.style.display = 'none';
-            if (!query) return;
-
-            const queryLower = query.toLowerCase().trim();
-            const scoredCryptos = cryptoList
-                .map(coin => {
-                    const nameLower = coin.name.toLowerCase();
-                    const symbolLower = coin.symbol.toLowerCase();
-                    let score = 0;
-                    if (nameLower === queryLower || symbolLower === queryLower) score += 100;
-                    if (nameLower.startsWith(queryLower) || symbolLower.startsWith(queryLower) || popularCryptos.includes(coin.id)) score += 50;
-                    if (nameLower.includes(queryLower) || symbolLower.includes(queryLower)) score += 20;
-                    return { coin, score };
-                })
-                .filter(item => item.score > 0)
-                .sort((a, b) => b.score - a.score || a.coin.name.localeCompare(b.coin.name))
-                .slice(0, 5);
-
-            if (scoredCryptos.length === 0) {
-                suggestionsList.innerHTML = '<li>No matching cryptocurrencies found.</li>';
-                suggestionsList.style.display = 'block';
-                return;
-            }
-
-            scoredCryptos.forEach(({ coin }) => {
-                const li = document.createElement('li');
-                li.textContent = `${coin.name} (${coin.symbol.toUpperCase()})`;
-                li.dataset.id = coin.id;
-                li.dataset.symbol = coin.symbol.toUpperCase();
-                li.addEventListener('click', () => {
-                    cryptoSearch.value = `${coin.name} (${coin.symbol.toUpperCase()})`;
-                    selectedCrypto = { id: coin.id, symbol: coin.symbol.toUpperCase(), name: coin.name };
-                    suggestionsList.innerHTML = '';
-                    suggestionsList.style.display = 'none';
-                });
-                suggestionsList.appendChild(li);
-            });
-
-            suggestionsList.style.display = 'block';
-        }, 500);
-
-        async function calculateConversion() {
-            const amount = parseFloat(cryptoAmount.value);
-            const currency = currencySelect.value.toLowerCase();
-            calculatorResult.innerHTML = '';
-            calculatorResult.classList.remove('error');
-
-            if (!selectedCrypto) {
-                calculatorResult.innerHTML = '<span>Please select a valid cryptocurrency.</span>';
-                calculatorResult.classList.add('error');
-                return;
-            }
-            if (isNaN(amount) || amount <= 0) {
-                calculatorResult.innerHTML = '<span>Please enter a valid amount.</span>';
-                calculatorResult.classList.add('error');
-                return;
-            }
-
-            try {
-                calculatorResult.innerHTML = '<p>Loading...</p>';
-                const price = await fetchCryptoPrice(selectedCrypto.id, currency);
-                const convertedValue = amount * price;
-                calculatorResult.innerHTML = `<span>${formatNumber(amount, 8)} ${selectedCrypto.symbol} = ${formatNumber(convertedValue, 2)} ${currency.toUpperCase()}</span>`;
-            } catch (error) {
-                console.error('Error fetching crypto price:', error);
-                calculatorResult.innerHTML = '<p>Error fetching price data. Please try again later.</p>';
-                calculatorResult.classList.add('error');
-            }
-        }
-
-        fetchCryptoList();
-
-        cryptoSearch.addEventListener('input', (e) => {
-            selectedCrypto = null;
-            showSuggestions(e.target.value);
-        });
-
-        cryptoSearch.addEventListener('blur', () => {
-            setTimeout(() => { suggestionsList.style.display = 'none'; }, 200);
-        });
-
-        cryptoSearch.addEventListener('focus', () => {
-            if (cryptoSearch.value) showSuggestions(cryptoSearch.value);
-        });
-
-        cryptoSearch.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && selectedCrypto) calculateConversion();
-        });
-
-        calculateBtn.addEventListener('click', calculateConversion);
-        cryptoAmount.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && selectedCrypto) calculateConversion();
-        });
-    }
-
     // Transaction Tracker
     const walletAddressInput = document.getElementById('wallet-address');
     const cryptoSelect = document.getElementById('crypto-select');
@@ -1632,7 +1507,6 @@ if (pdfDropZone && pdfInput && convertBtn && converterResult) {
                 email: email,
                 message: `Dear ${name},\n\nThank you for visiting my portfolio today at codewithskye.github.io! I look forward to the opportunity to work with you in the near future. Please kindly refer me to friends, family, or any company you know that may need my services.\n\nBest regards,\nSkye`
             };
-            
             try {
                 const response = await fetch('https://formspree.io/f/xpwrjqpp', {
                     method: 'POST',
@@ -1878,4 +1752,474 @@ if (pdfDropZone && pdfInput && convertBtn && converterResult) {
     window.addEventListener('load', () => {
         window.dispatchEvent(new Event('resize'));
     });
+});
+
+// Excel to PDF Converter
+const excelDropZone = document.getElementById('excel-drop-zone');
+const excelInput = document.getElementById('excel-input');
+const excelConvertBtn = document.getElementById('excel-convert-btn');
+const excelConverterResult = document.getElementById('excel-converter-result');
+let selectedExcelFile = null;
+
+if (excelDropZone && excelInput && excelConvertBtn && excelConverterResult) {
+    console.log('Excel to PDF Converter elements found');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        excelDropZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log(`Excel drop zone event: ${eventName}`);
+        }, { passive: false });
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        excelDropZone.addEventListener(eventName, () => {
+            excelDropZone.classList.add('active');
+            console.log('Excel drop zone active');
+        }, { passive: false });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        excelDropZone.addEventListener(eventName, () => {
+            excelDropZone.classList.remove('active');
+            console.log('Excel drop zone inactive');
+        }, { passive: false });
+    });
+
+    excelDropZone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer?.files;
+        console.log('Dropped files:', files);
+        if (files && files.length > 0) {
+            const file = files[0];
+            console.log('File details:', { name: file.name, type: file.type, size: file.size });
+            if (file.name.match(/\.(xlsx|xls)$/i) && file.size <= 10 * 1024 * 1024) {
+                handleExcelFile(file);
+            } else {
+                excelConverterResult.innerHTML = '<p class="error">Please select a valid Excel file (.xlsx, .xls, max 10MB).</p>';
+                console.log('File rejected: Invalid type or size');
+            }
+        }
+    });
+
+    excelInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+        console.log('Selected files via input:', files);
+        if (files && files.length > 0) {
+            const file = files[0];
+            console.log('File details:', { name: file.name, type: file.type, size: file.size });
+            if (file.name.match(/\.(xlsx|xls)$/i) && file.size <= 10 * 1024 * 1024) {
+                handleExcelFile(file);
+            } else {
+                excelConverterResult.innerHTML = '<p class="error">Please select a valid Excel file (.xlsx, .xls, max 10MB).</p>';
+                console.log('File rejected: Invalid type or size');
+            }
+        }
+        e.target.value = '';
+    });
+
+    excelDropZone.addEventListener('click', (e) => {
+        console.log('Excel drop zone clicked');
+        e.stopPropagation();
+        excelInput.click();
+    });
+
+    excelInput.addEventListener('click', (e) => {
+        console.log('Excel file input clicked');
+        e.stopPropagation();
+    });
+
+    function handleExcelFile(file) {
+        selectedExcelFile = file;
+        excelConvertBtn.disabled = false;
+        console.log('File selected:', file.name);
+        renderExcelFile();
+    }
+
+    function renderExcelFile() {
+        excelConverterResult.innerHTML = '';
+        if (!selectedExcelFile) return;
+        const ul = document.createElement('ul');
+        ul.className = 'file-list';
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <span>${selectedExcelFile.name} (${(selectedExcelFile.size / 1024).toFixed(2)} KB)</span>
+            <i class='bx bx-trash' data-index="0"></i>
+        `;
+        ul.appendChild(li);
+        excelConverterResult.appendChild(ul);
+
+        ul.querySelector('.bx-trash').addEventListener('click', () => {
+            selectedExcelFile = null;
+            excelConvertBtn.disabled = true;
+            console.log('File removed');
+            renderExcelFile();
+        });
+    }
+
+    async function convertExcelToPDF() {
+        if (!selectedExcelFile) return;
+        excelConverterResult.innerHTML = '<p class="loading">Converting Excel to PDF...</p>';
+        excelConvertBtn.disabled = true;
+        console.log('Starting conversion for:', selectedExcelFile.name);
+
+        try {
+            const arrayBuffer = await selectedExcelFile.arrayBuffer();
+            console.log('Excel file read successfully');
+            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+            console.log('Workbook parsed:', workbook.SheetNames);
+            const { jsPDF } = window;
+            if (!jsPDF) throw new Error('jsPDF library not loaded');
+            const doc = new jsPDF();
+            let yOffset = 10;
+
+            workbook.SheetNames.forEach((sheetName, index) => {
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                console.log(`Processing sheet: ${sheetName}, rows: ${jsonData.length}`);
+
+                if (index > 0) doc.addPage();
+                doc.text(sheetName, 10, yOffset);
+                yOffset += 10;
+
+                jsonData.forEach((row, rowIndex) => {
+                    if (yOffset > 270) {
+                        doc.addPage();
+                        yOffset = 10;
+                    }
+                    row.forEach((cell, colIndex) => {
+                        doc.text(String(cell || ''), 10 + colIndex * 50, yOffset);
+                    });
+                    yOffset += 10;
+                });
+            });
+
+            const pdfBlob = doc.output('blob');
+            const pdfFileName = selectedExcelFile.name.replace(/\.(xlsx|xls)$/, '.pdf');
+            const downloadUrl = URL.createObjectURL(pdfBlob);
+
+            excelConverterResult.innerHTML = `
+                <div class="conversion-result">
+                    <p><strong>${pdfFileName}</strong></p>
+                    <p>Original Excel Size: ${(selectedExcelFile.size / 1024).toFixed(2)} KB</p>
+                    <p>PDF Size: ${(pdfBlob.size / 1024).toFixed(2)} KB</p>
+                    <a href="${downloadUrl}" download="${pdfFileName}" class="btn download-btn">Download <i class='bx bx-download'></i></a>
+                </div>
+            `;
+            console.log('Conversion successful, PDF generated:', pdfFileName);
+
+            selectedExcelFile = null;
+            excelConvertBtn.disabled = true;
+
+            setTimeout(() => URL.revokeObjectURL(downloadUrl), 60000);
+        } catch (error) {
+            console.error('Error converting Excel to PDF:', error);
+            excelConverterResult.innerHTML = `<p class="error">Error converting ${selectedExcelFile.name}: ${error.message}</p>`;
+            excelConvertBtn.disabled = false;
+        }
+    }
+
+    excelConvertBtn.addEventListener('click', convertExcelToPDF);
+} else {
+    console.error('Excel to PDF Converter elements not found:', {
+        excelDropZone: !!excelDropZone,
+        excelInput: !!excelInput,
+        excelConvertBtn: !!excelConvertBtn,
+        excelConverterResult: !!excelConverterResult
+    });
+}
+
+
+const suggestionCache = new Map();
+const tokenCache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+const popularCryptos = [
+  { id: 'bitcoin', name: 'Bitcoin', symbol: 'BTC' },
+  { id: 'ethereum', name: 'Ethereum', symbol: 'ETH' },
+  { id: 'solana', name: 'Solana', symbol: 'SOL' }
+];
+
+const isOnline = () => navigator.onLine;
+let tradingViewWidget = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const elements = {
+    cryptoSelect: document.getElementById('crypto-select'),
+    cryptoSuggestions: document.getElementById('crypto-suggestions'),
+    amountInput: document.getElementById('amount'),
+    currencySelect: document.getElementById('currency-select'),
+    calculateBtn: document.getElementById('calculate-btn'),
+    calculatorResult: document.getElementById('calculator-result'),
+    tokenDetails: document.getElementById('token-details'),
+    tokenName: document.getElementById('token-name'),
+    tokenSymbol: document.getElementById('token-symbol'),
+    tokenPrice: document.getElementById('token-price'),
+    tokenMarketCap: document.getElementById('token-market-cap'),
+    tokenVolume: document.getElementById('token-volume'),
+    tokenChange: document.getElementById('token-change'),
+    tokenCreationDate: document.getElementById('token-creation-date'),
+    tokenOwner: document.getElementById('token-owner'),
+    priceChart: document.getElementById('price-chart'),
+    tradingViewChart: document.getElementById('tradingview-chart'),
+    loadingIndicator: document.getElementById('loading-indicator')
+  };
+
+  if (Object.values(elements).every(el => el)) {
+    let selectedCryptoId = '';
+    const { cryptoSelect, cryptoSuggestions, loadingIndicator, tradingViewChart, priceChart, tokenDetails, calculatorResult } = elements;
+
+    // Add promotional message and WhatsApp button
+    const promoContainer = document.createElement('div');
+    promoContainer.className = 'promo-container';
+    promoContainer.style.marginTop = '20px';
+    promoContainer.innerHTML = `
+      <p>Do you want to buy or sell any cryptocurrency, visit SkyExchange.</p>
+      <a href="https://wa.me/+2347016794490" target="_blank" class="btn outline whatsapp-btn">
+        Contact via WhatsApp <i class="bx bxl-whatsapp"></i>
+      </a>
+    `;
+    calculatorResult.parentElement.appendChild(promoContainer);
+
+    // Load Boxicons if not already present
+    if (!document.querySelector('link[href*="boxicons"]')) {
+      const boxicons = document.createElement('link');
+      boxicons.rel = 'stylesheet';
+      boxicons.href = 'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css';
+      document.head.appendChild(boxicons);
+    }
+
+    const coinGeckoToTradingView = {
+      'bitcoin': 'BINANCE:BTCUSDT',
+      'ethereum': 'BINANCE:ETHUSDT',
+      'binancecoin': 'BINANCE:BNBUSDT',
+      'the-open-network': 'BINANCE:TONUSDT',
+      'solana': 'BINANCE:SOLUSDT',
+      'cardano': 'BINANCE:ADAUSDT',
+      'ripple': 'BINANCE:XRPUSDT',
+      'dogecoin': 'BINANCE:DOGEUSDT',
+      'polkadot': 'BINANCE:DOTUSDT',
+      'chainlink': 'BINANCE:LINKUSDT'
+    };
+
+    const debounce = (func, delay) => {
+      let timeout;
+      return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), delay);
+      };
+    };
+
+    const fetchWithRetry = async (url, options, retries = 3, delay = 1000) => {
+      for (let i = 0; i < retries; i++) {
+        try {
+          const response = await fetch(url, { ...options, signal: AbortSignal.timeout(5000) });
+          if (!response.ok) throw new Error(`CoinGecko API error: ${response.status}`);
+          return await response.json();
+        } catch (error) {
+          if (i === retries - 1) throw error;
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+    };
+
+    const fetchSuggestions = debounce(async (query) => {
+      if (query.length < 2) {
+        cryptoSuggestions.style.display = 'none';
+        return;
+      }
+      if (suggestionCache.has(query)) {
+        const { data, timestamp } = suggestionCache.get(query);
+        if (Date.now() - timestamp < CACHE_TTL) {
+          renderSuggestions(data);
+          return;
+        }
+      }
+      if (!isOnline()) {
+        renderSuggestions({ coins: popularCryptos });
+        return;
+      }
+      try {
+        loadingIndicator.style.display = 'block';
+        const data = await fetchWithRetry(
+          `${API_CONFIG.marketData.baseUrl}${API_CONFIG.marketData.endpoints.search}?query=${encodeURIComponent(query)}`
+        );
+        suggestionCache.set(query, { data, timestamp: Date.now() });
+        renderSuggestions(data);
+      } catch (error) {
+        console.error('Error fetching suggestions:', error);
+        calculatorResult.innerHTML = '<span class="error">Error fetching suggestions. Please try again later.</span>';
+      } finally {
+        loadingIndicator.style.display = 'none';
+      }
+    }, 200);
+
+    const renderSuggestions = (data) => {
+      cryptoSuggestions.innerHTML = '';
+      data.coins.slice(0, 5).forEach(coin => {
+        const li = document.createElement('li');
+        li.textContent = `${coin.name} (${coin.symbol.toUpperCase()})`;
+        li.dataset.id = coin.id;
+        li.addEventListener('click', () => {
+          cryptoSelect.value = `${coin.name} (${coin.symbol.toUpperCase()})`;
+          selectedCryptoId = coin.id;
+          cryptoSuggestions.style.display = 'none';
+          fetchTokenDetails(coin.id);
+          updateTradingViewChart(coin.id);
+        });
+        cryptoSuggestions.appendChild(li);
+      });
+      cryptoSuggestions.style.display = data.coins.length ? 'block' : 'none';
+    };
+
+    const fetchTokenDetails = async (id) => {
+      if (tokenCache.has(id)) {
+        const { data, timestamp } = tokenCache.get(id);
+        if (Date.now() - timestamp < CACHE_TTL) {
+          renderTokenDetails(data);
+          return;
+        }
+      }
+      if (!isOnline()) {
+        tokenDetails.style.display = 'none';
+        calculatorResult.innerHTML = '<span class="error">Offline. Please check your connection.</span>';
+        return;
+      }
+      try {
+        loadingIndicator.style.display = 'block';
+        const data = await fetchWithRetry(
+          `${API_CONFIG.marketData.baseUrl}/coins/${id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false`
+        );
+        tokenCache.set(id, { data, timestamp: Date.now() });
+        renderTokenDetails(data);
+      } catch (error) {
+        console.error('Error fetching token details:', error);
+        tokenDetails.style.display = 'none';
+        calculatorResult.innerHTML = '<span class="error">Error fetching token details. Please try again later.</span>';
+      } finally {
+        loadingIndicator.style.display = 'none';
+      }
+    };
+
+    const renderTokenDetails = (data) => {
+      elements.tokenName.textContent = `Name: ${data.name}`;
+      elements.tokenSymbol.textContent = `Symbol: ${data.symbol.toUpperCase()}`;
+      elements.tokenPrice.textContent = `Price: $${data.market_data.current_price.usd.toFixed(2)}`;
+      elements.tokenMarketCap.textContent = `Market Cap: $${(data.market_data.market_cap.usd / 1e9).toFixed(2)}B`;
+      elements.tokenVolume.textContent = `24h Volume: $${(data.market_data.total_volume.usd / 1e6).toFixed(2)}M`;
+      elements.tokenChange.textContent = `24h Change: ${data.market_data.price_change_percentage_24h.toFixed(2)}%`;
+      elements.tokenCreationDate.textContent = `Creation Date: ${data.genesis_date || 'Not Available'}`;
+      elements.tokenOwner.textContent = `Owner: ${data.links?.homepage[0] ? new URL(data.links.homepage[0]).hostname : 'Not Available'}`;
+      tokenDetails.style.display = 'block';
+    };
+
+    const initTradingViewChart = (cryptoId) => {
+      if (!window.TradingView) {
+        const script = document.createElement('script');
+        script.src = 'https://s3.tradingview.com/tv.js';
+        script.async = true;
+        script.onload = () => createTradingViewWidget(cryptoId);
+        script.onerror = () => {
+          console.error('Failed to load TradingView script');
+          priceChart.style.display = 'none';
+          calculatorResult.innerHTML = '<span class="error">Failed to load chart. Please try again.</span>';
+        };
+        document.head.appendChild(script);
+      } else {
+        createTradingViewWidget(cryptoId);
+      }
+    };
+
+    const createTradingViewWidget = (cryptoId) => {
+      const symbol = coinGeckoToTradingView[cryptoId] || 'BINANCE:BTCUSDT';
+      const isMobile = window.innerWidth <= 768;
+      tradingViewChart.innerHTML = '';
+      tradingViewWidget = new TradingView.widget({
+        width: '100%',
+        height: isMobile ? 450 : 650,
+        symbol,
+        interval: 'W',
+        range: '1M',
+        timezone: 'Etc/UTC',
+        theme: document.body.classList.contains('dark-mode') ? 'dark' : 'light',
+        style: '1',
+        locale: 'en',
+        toolbar_bg: '#f1f3f6',
+        enable_publishing: false,
+        allow_symbol_change: false,
+        hotlist: true,
+        calendar: true,
+        container_id: 'tradingview-chart'
+      });
+      priceChart.style.display = 'block';
+      loadingIndicator.style.display = 'none';
+    };
+
+    const updateTradingViewChart = (cryptoId) => {
+      if (!cryptoId) return;
+      const symbol = coinGeckoToTradingView[cryptoId] || 'BINANCE:BTCUSDT';
+      if (tradingViewWidget) {
+        tradingViewWidget.setSymbol(symbol, 'W');
+      } else {
+        initTradingViewChart(cryptoId);
+      }
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && isOnline()) {
+        initTradingViewChart(selectedCryptoId || 'bitcoin');
+        observer.disconnect();
+      }
+    }, { threshold: 0.1 });
+    observer.observe(tradingViewChart);
+
+    window.addEventListener('offline', () => {
+      calculatorResult.innerHTML = '<span class="error">Offline. Using cached data.</span>';
+    });
+
+    cryptoSelect.addEventListener('input', (e) => fetchSuggestions(e.target.value));
+    cryptoSelect.addEventListener('blur', () => {
+      setTimeout(() => { cryptoSuggestions.style.display = 'none'; }, 200);
+    });
+    cryptoSelect.addEventListener('focus', () => {
+      if (cryptoSelect.value) fetchSuggestions(cryptoSelect.value);
+    });
+    elements.calculateBtn.addEventListener('click', calculateConversion);
+    elements.amountInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && selectedCryptoId) calculateConversion();
+    });
+
+    async function calculateConversion() {
+      if (!selectedCryptoId || !elements.amountInput.value || elements.amountInput.value <= 0) {
+        calculatorResult.innerHTML = '<span class="error">Please select a cryptocurrency and enter a valid amount.</span>';
+        return;
+      }
+      try {
+        loadingIndicator.style.display = 'block';
+        const currency = elements.currencySelect.value;
+        const price = await fetchCryptoPrice(selectedCryptoId, currency);
+        const amount = parseFloat(elements.amountInput.value);
+        const result = (amount * price).toFixed(2);
+        calculatorResult.innerHTML = `<span>${elements.amountInput.value} ${cryptoSelect.value.split(' (')[0]} = ${result} ${currency.toUpperCase()}</span>`;
+      } catch (error) {
+        console.error('Error calculating conversion:', error);
+        calculatorResult.innerHTML = '<span class="error">Error calculating conversion. Please try again later.</span>';
+      } finally {
+        loadingIndicator.style.display = 'none';
+      }
+    }
+
+    async function fetchCryptoPrice(cryptoId, currency) {
+      try {
+        const data = await fetchWithRetry(
+          `${API_CONFIG.marketData.baseUrl}/simple/price?ids=${cryptoId}&vs_currencies=${currency}`
+        );
+        return data[cryptoId][currency];
+      } catch (error) {
+        console.error('Error fetching crypto price:', error);
+        throw error;
+      }
+    }
+  } else {
+    console.error('Crypto Calculator elements not found');
+  }
 });
