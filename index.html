@@ -6,9 +6,13 @@
     <title>Welcome</title>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cursor.css">
 </head>
 <body class="welcome-page">
-    <!-- welcome.html -->
+    <!-- Custom Cursor Element -->
+    <div class="custom-cursor" id="customCursor"></div>
+
+    <!-- Video Background -->
     <video class="video-background" autoplay muted loop playsinline>
         <source src="background-video.mp4" type="video/mp4">
         Your browser does not support the video element.
@@ -24,7 +28,6 @@
     <!-- Greeting Popup -->
     <div class="greeting-popup" id="greetingPopup">
         <div class="greeting-card">
-            <!-- <i class='bx bx-x' id="closePopup" aria-label="Close popup"></i> -->
             <h2 id="greeting-text">Welcome to My World!</h2>
             <form id="personalize-form" class="personalize-form" aria-label="Sign up for personalized experience">
                 <div class="input-box">
@@ -45,7 +48,7 @@
     <!-- Main Content -->
     <main class="welcome-content">
         <p class="greeting">Welcome, <span class="user-name"></span>!</p>
-        <h1>Discover My Portfolio</h1>
+        <h1>Not Just a Portfolio. A Digital Experience</h1>
         <p>Welcome to my portfolio, showcasing my expertise in UI/UX design, web development, 
             and more. Explore the <strong>Home page</strong> for an overview of my skills, projects, 
             and testimonials. Learn about my background on the <strong>About page</strong>. 
@@ -66,12 +69,6 @@
             <i class='bx bx-volume-full'></i> Toggle Audio
         </button>
     </div>
-    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-    <script>
-    (function(){
-        emailjs.init('Vj3JITWR-9kOy2wkp'); // Replace with your Public Key
-    })();
-    </script>
     <script src="script.js"></script>
 </body>
 </html>
