@@ -3207,7 +3207,7 @@ body.dark-mode .welcome-content .greeting .user-name {
 }
 
 .welcome-content h1 {
-    font-size: clamp(1.8em, 7vw, 2.5em); 
+    font-size: clamp(1.5em, 5.5vw, 2.1em); 
     font-weight: 500;
     background: var(--gradient);
     background-clip: text;
