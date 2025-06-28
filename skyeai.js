@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const suggestion = document.createElement("button");
             suggestion.className = "suggestion-btn";
             if (question === "Back to portfolio") {
-                suggestion.innerHTML = `<a href="https://codewithskye.github.io">Back to portfolio</a>`;
+                suggestion.innerHTML = `<a href="https://codewithskye.github.io/technexus.html">Back to portfolio</a>`;
             } else {
                 suggestion.textContent = question;
                 suggestion.addEventListener("click", () => {
