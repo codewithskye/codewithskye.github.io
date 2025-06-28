@@ -30,6 +30,8 @@
     <script src="js/script.js" defer></script>
 </head>
 <body class="technexus-page">
+    <div class="custom-cursor" id="customCursor"></div>
+
         <!-- Greeting Popup -->
     <div class="greeting-popup" id="greetingPopup">
         <div class="greeting-card">
@@ -57,9 +59,9 @@
             <li><a href="home.html">Home</a></li>
             <li><a href="#crypto-news">Latest News</a></li>
             <li><a href="#economic-calendar">Economic Calendar</a></li>
-            <li><a href="#pips-calculator">For Crypto</a></li>
-            <li><a href="#tools">Tools</a></li>
-            <li><a href="#ai-chatbot">AI</a></li>
+            <li><a href="#pips-calculator">For Crypto <span class="new-badge">New</span></a></li>
+            <li><a href="#tools">Tools <span class="new-badge">New</span></a></li>
+            <li><a href="#ai-chatbot">AI <span class="new-badge">New</span></a></li>
             <li><a href="contact.html" class="btn nav-btn">Contact Me <i class='bx bxs-chevron-right'></i></a></li>
         </ul>
         <div class="nav-right">
@@ -196,11 +198,11 @@
             </div>
         </div>
     </section>
-    
+
     <!-- Crypto Calculator Section -->
     <section id="crypto-calculator" class="mobile-scroll content-section">
         <div class="projects-header">
-            <h1 class="header mobile-scroll"><span>Crypto Calculator</span></h1>
+            <h1 class="header mobile-scroll"><span>Crypto Info & Calculator</span></h1>
         </div>
         <div class="projects-container">
             <div class="box mobile-scroll calculator-container">
@@ -242,7 +244,7 @@
                     <p id="token-owner"></p>
                 </div>
                 <div id="price-chart" class="price-chart" style="display: none;">
-                    <h3><span>Price Chart (7 Days)</span></h3>
+                    <h3><span>Price Chart</span></h3>
                     <div id="tradingview-chart"></div>
                 </div>
                 <div id="loading-indicator" class="loading-indicator" style="display: none;">
@@ -357,54 +359,55 @@
 
 
 
-    <!-- AI Chatbot Section -->
-    <section id="ai-chatbot" class="content-section">
-        <div class="projects-header">
-            <h1 class="header"><span>Ask Skye AI</span></h1>
+<!-- AI Chatbot Section -->
+<section id="ai-chatbot" class="content-section">
+    <div class="projects-header">
+        <h1 class="header"><span>SkyeMini AI</span></h1>
+    </div>
+    <div class="chatbot-container">
+        <div class="chatbot-messages" id="chatbot-messages">
+            <!-- Messages will be dynamically added -->
         </div>
-        <div class="chatbot-container">
-            <div class="chatbot-messages" id="chatbot-messages">
-                <div class="message bot-message">Hi! I’m Skye AI, happy to assist you 😊 Just keep in mind, I’m still in development.
+        <div class="chatbot-input">
+            <input type="text" id="chatbot-input" placeholder="Type your question..." />
+            <button class="btn chatbot-send"><i class='bx bxs-send'></i></button>
+        </div>
+        <div id="suggestions-container" class="suggestions-container"></div> <!-- Persistent suggestions -->
+    </div>
+</section>
 
-                </div>
+
+
+    <!-- QR Code Section -->
+    <section class="qr-code-section mobile-scroll content-section">
+        <h2 class="qr-header">Connect Instantly</h2>
+        <div class="qr-container">
+            <div class="qr-box">
+                <a href="https://wa.me/+2347016794490" target="_blank" rel="noopener noreferrer">
+                    <img src="images/whatsapp_qr.jpg" alt="WhatsApp QR Code" class="qr-image">
+                </a>
+                <p class="qr-text">Scan Me for WhatsApp</p>
             </div>
-            <div class="chatbot-input">
-                <input type="text" id="chatbot-input" placeholder="Type your question..." />
-                <button class="btn chatbot-send"><i class='bx bxs-send'></i></button>
+            <div class="qr-box">
+                <a href="https://www.linkedin.com/in/codewithskye/" target="_blank" rel="noopener noreferrer">
+                    <img src="images/linkedin_qr.jpg" alt="Telegram QR Code" class="qr-image">
+                </a>
+                <p class="qr-text">Scan Me for Linkedin</p>
+            </div>
+            <div class="qr-box">
+                <a href="https://t.me/danskye007" target="_blank" rel="noopener noreferrer">
+                    <img src="images/telegram_qr.jpg" alt="Telegram QR Code" class="qr-image">
+                </a>
+                <p class="qr-text">Scan Me for Telegram</p>
+            </div>
+            <div class="qr-box">
+                <a href="https://t.me/danskye007" target="_blank" rel="noopener noreferrer">
+                    <img src="images/instagram_qr.jpg" alt="Telegram QR Code" class="qr-image">
+                </a>
+                <p class="qr-text">Scan Me for Instagram</p>
             </div>
         </div>
     </section>
-
-        <!-- QR Code Section -->
-        <section class="qr-code-section mobile-scroll content-section">
-            <h2 class="qr-header">Connect Instantly</h2>
-            <div class="qr-container">
-                <div class="qr-box">
-                    <a href="https://wa.me/+2347016794490" target="_blank" rel="noopener noreferrer">
-                        <img src="images/whatsapp_qr.jpg" alt="WhatsApp QR Code" class="qr-image">
-                    </a>
-                    <p class="qr-text">Scan Me for WhatsApp</p>
-                </div>
-                <div class="qr-box">
-                    <a href="https://www.linkedin.com/in/codewithskye/" target="_blank" rel="noopener noreferrer">
-                        <img src="images/linkedin_qr.jpg" alt="Telegram QR Code" class="qr-image">
-                    </a>
-                    <p class="qr-text">Scan Me for Linkedin</p>
-                </div>
-                <div class="qr-box">
-                    <a href="https://t.me/danskye007" target="_blank" rel="noopener noreferrer">
-                        <img src="images/telegram_qr.jpg" alt="Telegram QR Code" class="qr-image">
-                    </a>
-                    <p class="qr-text">Scan Me for Telegram</p>
-                </div>
-                <div class="qr-box">
-                    <a href="https://t.me/danskye007" target="_blank" rel="noopener noreferrer">
-                        <img src="images/instagram_qr.jpg" alt="Telegram QR Code" class="qr-image">
-                    </a>
-                    <p class="qr-text">Scan Me for Instagram</p>
-                </div>
-            </div>
-        </section>
 
     <!-- Footer -->
     <footer class="mobile-scroll content-section">
@@ -445,5 +448,12 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="chatbot.js"></script>
+    <div id="toast" class="toast hidden">
+        <span id="toast-message"></span>
+    </div>
+    <button id="scroll-arrow" class="scroll-arrow hidden" title="Scroll to top">
+        <i class='bx bx-chevron-up'></i>
+    </button>
 </body>
 </html>
