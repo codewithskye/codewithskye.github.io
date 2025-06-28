@@ -59,6 +59,9 @@
     </head>
     
     <body class="home-page">
+        
+        <div class="custom-cursor" id="customCursor"></div>
+
  
         <!-- Greeting Popup -->
         <div class="greeting-popup" id="greetingPopup">
@@ -98,10 +101,6 @@
 
     <!-- Home Section -->
     <section id="home" class="mobile-scroll content-section">
-        <!-- <video class="video-background" autoplay muted loop playsinline>
-            <source src="background-video.mp4" type="video/mp4">
-            Your browser does not support the video element.
-        </video> -->
         <img src="images/profilepics.png" alt="Daniel Owolabi" class="profile-img mobile-scroll" onerror="this.src='https://via.placeholder.com/300x300?text=Profile+Image';">
         <div class="info-box mobile-scroll">
             <h1><span>Hi <span id="user-name-display"></span>, I’m Daniel</span></h1>
@@ -455,5 +454,11 @@
         </div>
     </footer>
     <script src="script.js"></script>
+    <button id="scroll-arrow" class="scroll-arrow hidden" title="Scroll to top">
+        <i class='bx bx-chevron-up'></i>
+    </button>
+    <div id="toast" class="toast hidden">
+        <span id="toast-message"></span>
+    </div>
 </body>
 </html>
