@@ -148,6 +148,21 @@
         transform: scale(1);
     }
 }
+@keyframes messageFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-4px); }
+}
+
+@keyframes gradientGlow {
+    0% { box-shadow: 0 0 5px rgba(0, 27, 96, 0.5); }
+    50% { box-shadow: 0 0 15px rgba(1, 3, 29, 0.7); }
+    100% { box-shadow: 0 0 5px rgba(0, 27, 96, 0.5); }
+}
 
 /* Global Styles */
 * {
@@ -317,6 +332,38 @@ body.dark-mode .greeting-card #closePopup {
 
 body.dark-mode .greeting-card #user-name-display {
     color: #01031d; 
+}
+
+.custom-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #4b6cb7;
+    border-radius: 50%;
+    background: linear-gradient(to right, #001b60, #01031d);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    transition: width 0.15s ease, height 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.custom-cursor.hidden {
+    opacity: 0;
+}
+
+.custom-cursor.hover {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(to right, #1e3a8a, #0a1027);
+    border-color: #89a4f0;
+}
+
+body.desktop-cursor {
+    cursor: none;
+}
+
+a, button, .btn, input, [role="button"] {
+    cursor: inherit;
 }
 /* Navigation */
 nav {
@@ -1232,7 +1279,7 @@ body.dark-mode .see-more {
 }
 
 #ai-chatbot .chatbot-container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     background: var(--card-bg);
     border-radius: 15px;
@@ -1259,14 +1306,15 @@ body.dark-mode #ai-chatbot .chatbot-messages {
     margin: 10px 0;
     padding: 10px 15px;
     border-radius: 15px;
-    max-width: 80%;
+    max-width: 100%;
     line-height: 1.4;
     font-size: 0.9rem;
     animation: messageFadeIn 0.3s ease-out;
+    position: relative; /* For absolute positioning of copy-btn */
 }
 
 #ai-chatbot .bot-message {
-    background: var(--gradient);
+    background: linear-gradient(to right, #001b60, #01031d);
     color: #fff;
     margin-right: auto;
     border-bottom-left-radius: 5px;
@@ -1289,10 +1337,53 @@ body.dark-mode #ai-chatbot .user-message {
     color: #FFFFFF;
 }
 
+#ai-chatbot .response-content {
+    margin: 0;
+    padding: 0;
+}
+
+#ai-chatbot .response-content p {
+    margin: 0.5em 0;
+    padding: 0;
+}
+
+#ai-chatbot .response-content ul,
+#ai-chatbot .response-content ol {
+    margin: 0.5em 0;
+    padding-left: 20px;
+}
+
+#ai-chatbot .response-content li {
+    margin: 0.3em 0;
+    padding-left: 5px;
+}
+
+body.dark-mode #ai-chatbot .response-content li {
+    color: #000000;
+}
+
+#ai-chatbot .response-content a {
+    color: #4ecdc4; 
+    text-decoration: underline;
+}
+
+body.dark-mode #ai-chatbot .response-content a {
+    color: #4ecdc4; 
+}
+
+#ai-chatbot .response-content a:hover {
+    color: #45a29e; 
+    text-decoration: none;
+}
+
+body.dark-mode #ai-chatbot .response-content a:hover {
+    color: #45a29e;
+}
+
 #ai-chatbot .typing {
     display: flex;
     align-items: center;
-    background: var(--gradient);
+    background: linear-gradient(to right, #001b60, #01031d);
     color: #fff;
     padding: 5px 15px;
     margin-right: auto;
@@ -1358,7 +1449,7 @@ body.dark-mode #ai-chatbot .chatbot-input input:focus {
 
 #ai-chatbot .chatbot-send {
     padding: 12px 20px;
-    background: var(--gradient);
+    background: linear-gradient(to right, #001b60, #01031d);
     color: #fff;
     border: none;
     border-radius: 25px;
@@ -1390,6 +1481,89 @@ body.dark-mode #ai-chatbot .chatbot-send:hover {
 
 body.dark-mode #ai-chatbot .chatbot-send:focus {
     outline: 3px solid #FFFFFF;
+}
+
+/* Copy Button Styles */
+.copy-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-size: 1rem;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    transition: transform 0.2s ease;
+}
+
+body.dark-mode .copy-btn {
+    color: #000000;
+}
+
+.copy-btn:hover {
+    transform: scale(1.1);
+}
+
+.copy-btn i.bx-check {
+    color: #698a88;
+}
+
+body.dark-mode .copy-btn i.bx-check {
+    color: #ffffff;
+}
+
+/* Suggestions Container */
+.suggestions-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.suggestion-btn {
+    background: linear-gradient(to right, #001b60, #01031d);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .suggestion-btn {
+    background: linear-gradient(to right, #ffffff, #d3d3d3);
+    color: #000000;
+}
+
+.suggestion-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .suggestion-btn:hover {
+    background: linear-gradient(to right, #d3d3d3, #ffffff);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
+}
+
+.suggestion-btn:active {
+    transform: translateY(0);
+}
+
+.suggestion-btn a {
+    color: #fff;
+    text-decoration: none;
+}
+
+body.dark-mode .suggestion-btn a {
+    color: #000000;
+}
+
+.suggestion-btn a:hover {
+    text-decoration: underline;
 }
 
 #crypto-news .box {
@@ -2698,6 +2872,34 @@ body.dark-mode #newsletter-form .btn:disabled {
     background: #666666;
     color: #cccccc;
 }
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4BB543; /* success green */
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .toast.error {
+    background-color: #e74c3c; /* red for errors */
+  }
+  
+  .hidden {
+    display: none !important;
+  }
 
 /* Accessibility: Reduce Motion */
 @media (prefers-reduced-motion: reduce) {
@@ -2757,7 +2959,7 @@ body.dark-mode .filter-btn {
 }
 
 .filter-btn:hover {
-    background: linear-gradient(to right, rgba(0, 27, 96, 0.2), rgba(0, 48, 135, 0.2)); /* Subtle semi-transparent gradient */
+    background: linear-gradient(to right, rgba(0, 27, 96, 0.2), rgba(0, 48, 135, 0.2)); 
     color: var(--text-color); 
     transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(0, 27, 96, 0.2); 
@@ -2765,21 +2967,21 @@ body.dark-mode .filter-btn {
 }
 
 body.dark-mode .filter-btn:hover {
-    background: linear-gradient(to right, rgb(165, 165, 150), rgba(211, 211, 211, 0.2)); /* Subtle semi-transparent gradient */
+    background: linear-gradient(to right, rgb(165, 165, 150), rgba(211, 211, 211, 0.2)); 
     color: #FFFFFF; 
     box-shadow: 0 2px 8px rgb(35, 15, 147); 
     animation: buttonBounce 0.6s ease-out;
 }
 
 .filter-btn.active {
-    background: linear-gradient(to right, rgba(0, 27, 96, 0.3), rgba(0, 48, 135, 0.3)); /* Subtle gradient */
+    background: linear-gradient(to right, rgba(0, 27, 96, 0.3), rgba(0, 48, 135, 0.3)); 
     color: var(--text-color);
     box-shadow: 0 2px 8px rgba(0, 8, 96, 0.2);
     animation: pulse 3s ease-in-out infinite; 
 }
 
 body.dark-mode .filter-btn.active {
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.3), rgba(211, 211, 211, 0.3)); /* Subtle gradient */
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.3), rgba(211, 211, 211, 0.3)); 
     color: #FFFFFF; 
     box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
 }
@@ -3371,7 +3573,42 @@ body.dark-mode #converter-result .loading {
     color: #FFFFFF;
 }
 
+/* Page scroll icon */
+.scroll-arrow {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #001b60;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 1000;
+}
 
+.scroll-arrow.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.scroll-arrow:not(.hidden) {
+    opacity: 1;
+}
+
+.scroll-arrow.down {
+    transform: rotate(180deg);
+}
+
+.scroll-arrow:hover {
+    background-color: #001b60;
+}
 
 
 /* mobile / responsiveness query */
@@ -3928,6 +4165,7 @@ body.dark-mode #converter-result .loading {
 }
 
 @media (max-width: 768px) {
+
     #ai-chatbot {
         padding: 0.8em 5%;
         margin-top: 0.8em;
@@ -3951,18 +4189,34 @@ body.dark-mode #converter-result .loading {
 
     #ai-chatbot .chatbot-input input {
         padding: 10px;
-        touch-action: auto; 
-        -webkit-user-select: text; 
-        user-select: text; 
-        -webkit-appearance: none; 
-        appearance: none; 
-        box-sizing: border-box; 
-        width: 100%; 
-        z-index: 10; 
+        touch-action: auto;
+        -webkit-user-select: text;
+        user-select: text;
+        -webkit-appearance: none;
+        appearance: none;
+        box-sizing: border-box;
+        width: 100%;
+        z-index: 10;
     }
 
     #ai-chatbot .chatbot-send {
         padding: 10px 15px;
+    }
+
+    .suggestions-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .suggestion-btn {
+        width: 100%;
+        text-align: center;
+        font-size: 0.85rem;
+        padding: 0.6rem;
+    }
+
+    .copy-btn {
+        font-size: 1rem;
     }
 
     #crypto-calculator .calculator-inputs {
@@ -4396,18 +4650,27 @@ body.dark-mode #converter-result .loading {
 
     #ai-chatbot .chatbot-input input {
         padding: 8px;
-        touch-action: auto; 
-        -webkit-user-select: text; 
-        user-select: text; 
-        -webkit-appearance: none; 
-        appearance: none; 
-        box-sizing: border-box; 
-        width: 100%; 
-        z-index: 10; 
+        touch-action: auto;
+        -webkit-user-select: text;
+        user-select: text;
+        -webkit-appearance: none;
+        appearance: none;
+        box-sizing: border-box;
+        width: 100%;
+        z-index: 10;
     }
 
     #ai-chatbot .chatbot-send {
         padding: 8px 12px;
+    }
+
+    .suggestion-btn {
+        font-size: 0.8rem;
+        padding: 0.5rem;
+    }
+
+    .copy-btn {
+        font-size: 0.9rem;
     }
 
     form {
