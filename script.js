@@ -705,67 +705,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100));
     }
 
-    // Chatbot Functionality
-    const chatbotInput = document.getElementById('chatbot-input');
-    const chatbotMessages = document.getElementById('chatbot-messages');
-    const chatbotSendBtn = document.querySelector('.chatbot-send');
-    if (chatbotInput && chatbotMessages && chatbotSendBtn) {
-        async function fetchAIResponse(query) {
-            const mockResponses = {
-                'bitcoin price': 'The current price of Bitcoin is approximately $60,000 USD, based on recent market data.',
-                'crypto news': 'Recent crypto news includes Bitcoin reaching a new all-time high and Ethereum upgrades improving transaction speeds.',
-                'what is ui/ux': 'UI/UX refers to User Interface and User Experience design, focusing on creating intuitive and visually appealing digital products.',
-                'web development': 'Web development involves building websites using HTML, CSS, and JavaScript. Popular frameworks include React, Angular, and Node.js.',
-                'crypto calculator': 'A crypto calculator converts cryptocurrency amounts to fiat currencies like USD or EUR, using based on current market prices.',
-                default: 'Sorry, I don’t have specific information on that topic. Try asking about crypto, UI/UX, or web development!'
-            };
-
-            const queryLower = query.toLowerCase().trim();
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve(mockResponses[queryLower] || mockResponses.default);
-                }, 1000);
-            });
-        }
-
-        function addMessage(content, isUser = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            messageDiv.textContent = content;
-            chatbotMessages.appendChild(messageDiv);
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        }
-
-        async function handleChatbotInput() {
-            const query = chatbotInput.value.trim();
-            if (!query) return;
-
-            addMessage(query, true);
-            chatbotInput.value = '';
-
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'message bot-message';
-            loadingDiv.textContent = 'Thinking...';
-            chatbotMessages.appendChild(loadingDiv);
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-
-            try {
-                const response = await fetchAIResponse(query);
-                loadingDiv.remove();
-                addMessage(response);
-            } catch (error) {
-                console.error('Error fetching AI response:', error);
-                loadingDiv.remove();
-                addMessage('Sorry, something went wrong. Please try again later.');
-            }
-        }
-
-        chatbotSendBtn.addEventListener('click', handleChatbotInput);
-        chatbotInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleChatbotInput();
-        });
-    }
-
     // News Section
     const cryptoNewsContainer = document.getElementById('crypto-news-container');
     if (cryptoNewsContainer) {
@@ -903,7 +842,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 "symbol": "BINANCE:BTCUSDT",
                 "interval": "D",
                 "timezone": "Etc/UTC",
-                "theme": "dark",
+                "theme": "white",
                 "style": "1",
                 "locale": "en",
                 "toolbar_bg": "#f1f3f6",
@@ -926,6 +865,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(initTradingViewChart, 100);
         }
     }
+
     // Transaction Tracker
     const walletAddressInput = document.getElementById('wallet-address');
     const cryptoSelect = document.getElementById('crypto-select');
@@ -1018,141 +958,94 @@ document.addEventListener('DOMContentLoaded', () => {
         filterEvents();
     }
 
-    // Contact Form
-    const contactForm = document.querySelector('#contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const textarea = contactForm.querySelector('textarea');
-            const formData = new FormData(contactForm);
-            const formObject = {};
-            formData.forEach((value, key) => {
-                formObject[key] = value;
+// Toast Setup (shared)
+const toast = document.getElementById('toast');
+const toastMessage = document.getElementById('toast-message');
+
+const showToast = (message, isError = false) => {
+    if (!toast || !toastMessage) return;
+    toastMessage.textContent = message;
+    toast.className = `toast show ${isError ? 'error' : ''}`;
+    setTimeout(() => {
+        toast.className = 'toast hidden';
+    }, 4000);
+};
+
+// CONTACT FORM
+const contactForm = document.querySelector('#contact-form');
+if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitButton = contactForm.querySelector('button[type="submit"]');
+        const formData = new FormData(contactForm);
+        if (submitButton) submitButton.disabled = true;
+
+        try {
+            const response = await fetch('https://formspree.io/f/movdqpoe', {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' },
+                signal: AbortSignal.timeout(5000),
+                redirect: 'manual'
             });
 
-            try {
-                const response = await fetch('https://formspree.io/f/movdqpoe', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify(formObject),
-                    signal: AbortSignal.timeout(5000)
-                });
-
-                if (response.ok) {
-                    alert('Message sent successfully!');
-                    contactForm.reset();
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.error || 'Failed to send message. Please try again.'}`);
-                }
-            } catch (error) {
-                alert('An error occurred while sending the message. Please try again later.');
-                console.error('Form submission error:', error);
+            if (response.ok || response.status === 302 || response.type === 'opaqueredirect') {
+                contactForm.reset();
+                showToast('✅ Message sent successfully!');
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                const message = errorData.error || '❌ Failed to send message.';
+                showToast(message, true);
             }
-            if (textarea) textarea.focus();
-        });
-    }
-
-    // Newsletter Form
-    const newsletterForm = document.getElementById('newsletter-form');
-    const feedbackDiv = document.getElementById('newsletter-feedback');
-    if (newsletterForm && feedbackDiv) {
-        const loader = feedbackDiv.querySelector('.loader');
-        const successMessage = feedbackDiv.querySelector('.success-message');
-        const errorMessage = feedbackDiv.querySelector('.error-message');
-
-        const initializeFeedback = () => {
-            console.log('[Newsletter] Initializing feedback');
-            if (loader) {
-                loader.classList.add('hidden');
-                console.log('[Newsletter] Loader hidden:', loader.classList.contains('hidden'));
-            }
-            if (successMessage) {
-                successMessage.classList.add('hidden');
-                console.log('[Newsletter] Success message hidden:', successMessage.classList.contains('hidden'));
-            }
-            if (errorMessage) {
-                errorMessage.classList.add('hidden');
-                errorMessage.textContent = '';
-                console.log('[Newsletter] Error message hidden:', errorMessage.classList.contains('hidden'));
-            }
-            const submitButton = newsletterForm.querySelector('button[type="submit"]');
+        } catch (error) {
+            console.error('[Contact] Error:', error);
+            showToast('❌ Something went wrong. Try again later.', true);
+        } finally {
             if (submitButton) submitButton.disabled = false;
-        };
+        }
+    });
+}
 
-        initializeFeedback();
+// NEWSLETTER FORM
+const newsletterForm = document.getElementById('newsletter-form');
+if (newsletterForm) {
+    newsletterForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitButton = newsletterForm.querySelector('button[type="submit"]');
+        if (submitButton) submitButton.disabled = true;
 
-        newsletterForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            console.log('[Newsletter] Form submitted');
-            const submitButton = newsletterForm.querySelector('button[type="submit"]');
-            const emailInput = newsletterForm.querySelector('input[name="email"]');
-            console.log('[Newsletter] Email value:', emailInput ? emailInput.value : 'No email input');
+        try {
+            const formData = new FormData(newsletterForm);
+            const response = await fetch('https://formspree.io/f/xqabkwrp', {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' },
+                signal: AbortSignal.timeout(5000)
+            });
 
-            initializeFeedback();
-            if (loader) {
-                loader.classList.remove('hidden');
-                console.log('[Newsletter] Loader shown');
+            if (response.ok || response.status === 201 || response.status === 302) {
+                newsletterForm.reset();
+                showToast('✅ Successfully subscribed!');
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                const message = errorData.error || `❌ Error: ${response.status}`;
+                showToast(message, true);
             }
-            if (submitButton) submitButton.disabled = true;
-
-            try {
-                const formData = new FormData(newsletterForm);
-                console.log('[Newsletter] Form data:', Object.fromEntries(formData));
-                const response = await fetch('https://formspree.io/f/xqabkwrp', {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'Accept': 'application/json' },
-                    signal: AbortSignal.timeout(5000)
-                });
-
-                console.log('[Newsletter] Response status:', response.status, response.ok);
-                if (loader) {
-                    loader.classList.add('hidden');
-                    console.log('[Newsletter] Loader hidden after response');
-                }
-
-                if (response.ok) {
-                    console.log('[Newsletter] Submission successful');
-                    if (successMessage) {
-                        successMessage.classList.remove('hidden');
-                        console.log('[Newsletter] Success message shown:', !successMessage.classList.contains('hidden'));
-                        successMessage.offsetHeight;
-                    } else {
-                        console.error('[Newsletter] Success message element not found');
-                    }
-                    newsletterForm.reset();
-                    setTimeout(() => {
-                        console.log('[Newsletter] Hiding success message after 5 seconds');
-                        initializeFeedback();
-                    }, 5000);
-                } else {
-                    const errorData = await response.json();
-                    console.error('[Newsletter] Response error:', errorData);
-                    throw new Error(errorData.error || `HTTP ${response.status}`);
-                }
-            } catch (error) {
-                console.error('[Newsletter] Submission error:', error.message);
-                if (loader) {
-                    loader.classList.add('hidden');
-                    console.log('[Newsletter] Loader hidden after error');
-                }
-                if (errorMessage) {
-                    errorMessage.textContent = 'Failed to subscribe. Please try again.';
-                    errorMessage.classList.remove('hidden');
-                    console.log('[Newsletter] Error message shown');
-                } else {
-                    console.error('[Newsletter] Error message element not found');
-                }
-                if (submitButton) submitButton.disabled = false;
+        } catch (error) {
+            console.error('[Newsletter] Error:', error);
+            let errorText = '❌ Failed to subscribe. Try again.';
+            if (error.message.includes('429')) {
+                errorText = '⚠️ Too many attempts. Try later.';
+            } else if (error.message.includes('422')) {
+                errorText = '⚠️ Invalid or already subscribed email.';
             }
-        });
+            showToast(errorText, true);
+        } finally {
+            if (submitButton) submitButton.disabled = false;
+        }
+    });
+}
 
-        newsletterForm.addEventListener('reset', () => {
-            console.log('[Newsletter] Form reset manually');
-            initializeFeedback();
-        });
-    }
 
     // Image Compressor
     const dropZone = document.getElementById('drop-zone');
@@ -1330,80 +1223,80 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Image Compressor elements not found');
     }
 
-// PDF to JPG Converter
-const pdfDropZone = document.getElementById('pdf-drop-zone');
-const pdfInput = document.getElementById('pdf-input');
-const convertBtn = document.getElementById('convert-btn');
-const converterResult = document.getElementById('converter-result');
-let selectedFile = null;
+    // PDF to JPG Converter
+    const pdfDropZone = document.getElementById('pdf-drop-zone');
+    const pdfInput = document.getElementById('pdf-input');
+    const convertBtn = document.getElementById('convert-btn');
+    const converterResult = document.getElementById('converter-result');
+    let selectedFile = null;
 
-if (pdfDropZone && pdfInput && convertBtn && converterResult) {
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        pdfDropZone.addEventListener(eventName, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-        }, { passive: false });
-    });
-
-    ['dragenter', 'dragover'].forEach(eventName => {
-        pdfDropZone.addEventListener(eventName, () => pdfDropZone.classList.add('active'), { passive: false });
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        pdfDropZone.addEventListener(eventName, () => pdfDropZone.classList.remove('active'), { passive: false });
-    });
-
-    pdfDropZone.addEventListener('drop', (e) => {
-        const files = e.dataTransfer?.files;
-        if (files && files.length > 0 && files[0].type === 'application/pdf' && files[0].size <= 10 * 1024 * 1024) {
-            handleFile(files[0]);
-        } else {
-            converterResult.innerHTML = '<p class="error">Please select a valid PDF file (max 10MB).</p>';
-        }
-    });
-
-    pdfInput.addEventListener('change', (e) => {
-        const files = e.target.files;
-        if (files && files.length > 0 && files[0].type === 'application/pdf' && files[0].size <= 10 * 1024 * 1024) {
-            handleFile(files[0]);
-        } else {
-            converterResult.innerHTML = '<p class="error">Please select a valid PDF file (max 10MB).</p>';
-        }
-        e.target.value = '';
-    });
-
-    pdfDropZone.addEventListener('click', (e) => {
-        e.stopPropagation();
-        pdfInput.click();
-    });
-
-    pdfInput.addEventListener('click', (e) => e.stopPropagation());
-
-    function handleFile(file) {
-        selectedFile = file;
-        convertBtn.disabled = false;
-        renderFile();
-    }
-
-    function renderFile() {
-        converterResult.innerHTML = '';
-        if (!selectedFile) return;
-        const ul = document.createElement('ul');
-        ul.className = 'file-list';
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <span>${selectedFile.name} (${(selectedFile.size / 1024).toFixed(2)} KB)</span>
-            <i class='bx bx-trash' data-index="0"></i>
-        `;
-        ul.appendChild(li);
-        converterResult.appendChild(ul);
-
-        ul.querySelector('.bx-trash').addEventListener('click', () => {
-            selectedFile = null;
-            convertBtn.disabled = true;
-            renderFile();
+    if (pdfDropZone && pdfInput && convertBtn && converterResult) {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            pdfDropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, { passive: false });
         });
-    }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            pdfDropZone.addEventListener(eventName, () => pdfDropZone.classList.add('active'), { passive: false });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            pdfDropZone.addEventListener(eventName, () => pdfDropZone.classList.remove('active'), { passive: false });
+        });
+
+        pdfDropZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer?.files;
+            if (files && files.length > 0 && files[0].type === 'application/pdf' && files[0].size <= 10 * 1024 * 1024) {
+                handleFile(files[0]);
+            } else {
+                converterResult.innerHTML = '<p class="error">Please select a valid PDF file (max 10MB).</p>';
+            }
+        });
+
+        pdfInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            if (files && files.length > 0 && files[0].type === 'application/pdf' && files[0].size <= 10 * 1024 * 1024) {
+                handleFile(files[0]);
+            } else {
+                converterResult.innerHTML = '<p class="error">Please select a valid PDF file (max 10MB).</p>';
+            }
+            e.target.value = '';
+        });
+
+        pdfDropZone.addEventListener('click', (e) => {
+            e.stopPropagation();
+            pdfInput.click();
+        });
+
+        pdfInput.addEventListener('click', (e) => e.stopPropagation());
+
+        function handleFile(file) {
+            selectedFile = file;
+            convertBtn.disabled = false;
+            renderFile();
+        }
+
+        function renderFile() {
+            converterResult.innerHTML = '';
+            if (!selectedFile) return;
+            const ul = document.createElement('ul');
+            ul.className = 'file-list';
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span>${selectedFile.name} (${(selectedFile.size / 1024).toFixed(2)} KB)</span>
+                <i class='bx bx-trash' data-index="0"></i>
+            `;
+            ul.appendChild(li);
+            converterResult.appendChild(ul);
+
+            ul.querySelector('.bx-trash').addEventListener('click', () => {
+                selectedFile = null;
+                convertBtn.disabled = true;
+                renderFile();
+            });
+        }
 
     async function convertToJPG() {
         if (!selectedFile) return;
@@ -1507,6 +1400,7 @@ if (pdfDropZone && pdfInput && convertBtn && converterResult) {
                 email: email,
                 message: `Dear ${name},\n\nThank you for visiting my portfolio today at codewithskye.github.io! I look forward to the opportunity to work with you in the near future. Please kindly refer me to friends, family, or any company you know that may need my services.\n\nBest regards,\nSkye`
             };
+            // https://formspree.io/f/xpwrjqpp
             try {
                 const response = await fetch('https://formspree.io/f/xpwrjqpp', {
                     method: 'POST',
@@ -1754,6 +1648,9 @@ if (pdfDropZone && pdfInput && convertBtn && converterResult) {
     });
 });
 
+
+
+
 // Excel to PDF Converter
 const excelDropZone = document.getElementById('excel-drop-zone');
 const excelInput = document.getElementById('excel-input');
@@ -1942,7 +1839,7 @@ const popularCryptos = [
 const isOnline = () => navigator.onLine;
 let tradingViewWidget = null;
 
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('load', () => {
   const elements = {
     cryptoSelect: document.getElementById('crypto-select'),
     cryptoSuggestions: document.getElementById('crypto-suggestions'),
@@ -1964,262 +1861,288 @@ document.addEventListener('DOMContentLoaded', () => {
     loadingIndicator: document.getElementById('loading-indicator')
   };
 
-  if (Object.values(elements).every(el => el)) {
-    let selectedCryptoId = '';
-    const { cryptoSelect, cryptoSuggestions, loadingIndicator, tradingViewChart, priceChart, tokenDetails, calculatorResult } = elements;
-
-    // Add promotional message and WhatsApp button
-    const promoContainer = document.createElement('div');
-    promoContainer.className = 'promo-container';
-    promoContainer.style.marginTop = '20px';
-    promoContainer.innerHTML = `
-      <p>Looking to buy or sell cryptocurrency? Reach out to SkyeXchange. We're here to help!</p>
-      <a href="https://wa.me/+2347016794490" target="_blank" class="btn outline whatsapp-btn">
-        Contact via WhatsApp <i class="bx bxl-whatsapp"></i>
-      </a>
-    `;
-    calculatorResult.parentElement.appendChild(promoContainer);
-
-    // Load Boxicons if not already present
-    if (!document.querySelector('link[href*="boxicons"]')) {
-      const boxicons = document.createElement('link');
-      boxicons.rel = 'stylesheet';
-      boxicons.href = 'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css';
-      document.head.appendChild(boxicons);
-    }
-
-    const coinGeckoToTradingView = {
-      'bitcoin': 'BINANCE:BTCUSDT',
-      'ethereum': 'BINANCE:ETHUSDT',
-      'binancecoin': 'BINANCE:BNBUSDT',
-      'the-open-network': 'BINANCE:TONUSDT',
-      'solana': 'BINANCE:SOLUSDT',
-      'cardano': 'BINANCE:ADAUSDT',
-      'ripple': 'BINANCE:XRPUSDT',
-      'dogecoin': 'BINANCE:DOGEUSDT',
-      'polkadot': 'BINANCE:DOTUSDT',
-      'chainlink': 'BINANCE:LINKUSDT'
-    };
-
-    const debounce = (func, delay) => {
-      let timeout;
-      return (...args) => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func(...args), delay);
-      };
-    };
-
-    const fetchWithRetry = async (url, options, retries = 3, delay = 1000) => {
-      for (let i = 0; i < retries; i++) {
-        try {
-          const response = await fetch(url, { ...options, signal: AbortSignal.timeout(5000) });
-          if (!response.ok) throw new Error(`CoinGecko API error: ${response.status}`);
-          return await response.json();
-        } catch (error) {
-          if (i === retries - 1) throw error;
-          await new Promise(resolve => setTimeout(resolve, delay));
-        }
-      }
-    };
-
-    const fetchSuggestions = debounce(async (query) => {
-      if (query.length < 2) {
-        cryptoSuggestions.style.display = 'none';
-        return;
-      }
-      if (suggestionCache.has(query)) {
-        const { data, timestamp } = suggestionCache.get(query);
-        if (Date.now() - timestamp < CACHE_TTL) {
-          renderSuggestions(data);
-          return;
-        }
-      }
-      if (!isOnline()) {
-        renderSuggestions({ coins: popularCryptos });
-        return;
-      }
-      try {
-        loadingIndicator.style.display = 'block';
-        const data = await fetchWithRetry(
-          `${API_CONFIG.marketData.baseUrl}${API_CONFIG.marketData.endpoints.search}?query=${encodeURIComponent(query)}`
-        );
-        suggestionCache.set(query, { data, timestamp: Date.now() });
-        renderSuggestions(data);
-      } catch (error) {
-        console.error('Error fetching suggestions:', error);
-        calculatorResult.innerHTML = '<span class="error">Error fetching suggestions. Please try again later.</span>';
-      } finally {
-        loadingIndicator.style.display = 'none';
-      }
-    }, 200);
-
-    const renderSuggestions = (data) => {
-      cryptoSuggestions.innerHTML = '';
-      data.coins.slice(0, 5).forEach(coin => {
-        const li = document.createElement('li');
-        li.textContent = `${coin.name} (${coin.symbol.toUpperCase()})`;
-        li.dataset.id = coin.id;
-        li.addEventListener('click', () => {
-          cryptoSelect.value = `${coin.name} (${coin.symbol.toUpperCase()})`;
-          selectedCryptoId = coin.id;
-          cryptoSuggestions.style.display = 'none';
-          fetchTokenDetails(coin.id);
-          updateTradingViewChart(coin.id);
-        });
-        cryptoSuggestions.appendChild(li);
-      });
-      cryptoSuggestions.style.display = data.coins.length ? 'block' : 'none';
-    };
-
-    const fetchTokenDetails = async (id) => {
-      if (tokenCache.has(id)) {
-        const { data, timestamp } = tokenCache.get(id);
-        if (Date.now() - timestamp < CACHE_TTL) {
-          renderTokenDetails(data);
-          return;
-        }
-      }
-      if (!isOnline()) {
-        tokenDetails.style.display = 'none';
-        calculatorResult.innerHTML = '<span class="error">Offline. Please check your connection.</span>';
-        return;
-      }
-      try {
-        loadingIndicator.style.display = 'block';
-        const data = await fetchWithRetry(
-          `${API_CONFIG.marketData.baseUrl}/coins/${id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false`
-        );
-        tokenCache.set(id, { data, timestamp: Date.now() });
-        renderTokenDetails(data);
-      } catch (error) {
-        console.error('Error fetching token details:', error);
-        tokenDetails.style.display = 'none';
-        calculatorResult.innerHTML = '<span class="error">Error fetching token details. Please try again later.</span>';
-      } finally {
-        loadingIndicator.style.display = 'none';
-      }
-    };
-
-    const renderTokenDetails = (data) => {
-      elements.tokenName.textContent = `Name: ${data.name}`;
-      elements.tokenSymbol.textContent = `Symbol: ${data.symbol.toUpperCase()}`;
-      elements.tokenPrice.textContent = `Price: $${data.market_data.current_price.usd.toFixed(2)}`;
-      elements.tokenMarketCap.textContent = `Market Cap: $${(data.market_data.market_cap.usd / 1e9).toFixed(2)}B`;
-      elements.tokenVolume.textContent = `24h Volume: $${(data.market_data.total_volume.usd / 1e6).toFixed(2)}M`;
-      elements.tokenChange.textContent = `24h Change: ${data.market_data.price_change_percentage_24h.toFixed(2)}%`;
-      elements.tokenCreationDate.textContent = `Creation Date: ${data.genesis_date || 'Not Available'}`;
-      elements.tokenOwner.textContent = `Owner: ${data.links?.homepage[0] ? new URL(data.links.homepage[0]).hostname : 'Not Available'}`;
-      tokenDetails.style.display = 'block';
-    };
-
-    const initTradingViewChart = (cryptoId) => {
-      if (!window.TradingView) {
-        const script = document.createElement('script');
-        script.src = 'https://s3.tradingview.com/tv.js';
-        script.async = true;
-        script.onload = () => createTradingViewWidget(cryptoId);
-        script.onerror = () => {
-          console.error('Failed to load TradingView script');
-          priceChart.style.display = 'none';
-          calculatorResult.innerHTML = '<span class="error">Failed to load chart. Please try again.</span>';
-        };
-        document.head.appendChild(script);
-      } else {
-        createTradingViewWidget(cryptoId);
-      }
-    };
-
-    const createTradingViewWidget = (cryptoId) => {
-      const symbol = coinGeckoToTradingView[cryptoId] || 'BINANCE:BTCUSDT';
-      const isMobile = window.innerWidth <= 768;
-      tradingViewChart.innerHTML = '';
-      tradingViewWidget = new TradingView.widget({
-        width: '100%',
-        height: isMobile ? 450 : 650,
-        symbol,
-        interval: 'W',
-        range: '1M',
-        timezone: 'Etc/UTC',
-        theme: document.body.classList.contains('dark-mode') ? 'dark' : 'light',
-        style: '1',
-        locale: 'en',
-        toolbar_bg: '#f1f3f6',
-        enable_publishing: false,
-        allow_symbol_change: false,
-        hotlist: true,
-        calendar: true,
-        container_id: 'tradingview-chart'
-      });
-      priceChart.style.display = 'block';
-      loadingIndicator.style.display = 'none';
-    };
-
-    const updateTradingViewChart = (cryptoId) => {
-      if (!cryptoId) return;
-      const symbol = coinGeckoToTradingView[cryptoId] || 'BINANCE:BTCUSDT';
-      if (tradingViewWidget) {
-        tradingViewWidget.setSymbol(symbol, 'W');
-      } else {
-        initTradingViewChart(cryptoId);
-      }
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && isOnline()) {
-        initTradingViewChart(selectedCryptoId || 'bitcoin');
-        observer.disconnect();
-      }
-    }, { threshold: 0.1 });
-    observer.observe(tradingViewChart);
-
-    window.addEventListener('offline', () => {
-      calculatorResult.innerHTML = '<span class="error">Offline. Using cached data.</span>';
-    });
-
-    cryptoSelect.addEventListener('input', (e) => fetchSuggestions(e.target.value));
-    cryptoSelect.addEventListener('blur', () => {
-      setTimeout(() => { cryptoSuggestions.style.display = 'none'; }, 200);
-    });
-    cryptoSelect.addEventListener('focus', () => {
-      if (cryptoSelect.value) fetchSuggestions(cryptoSelect.value);
-    });
-    elements.calculateBtn.addEventListener('click', calculateConversion);
-    elements.amountInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && selectedCryptoId) calculateConversion();
-    });
-
-    async function calculateConversion() {
-      if (!selectedCryptoId || !elements.amountInput.value || elements.amountInput.value <= 0) {
-        calculatorResult.innerHTML = '<span class="error">Please select a cryptocurrency and enter a valid amount.</span>';
-        return;
-      }
-      try {
-        loadingIndicator.style.display = 'block';
-        const currency = elements.currencySelect.value;
-        const price = await fetchCryptoPrice(selectedCryptoId, currency);
-        const amount = parseFloat(elements.amountInput.value);
-        const result = (amount * price).toFixed(2);
-        calculatorResult.innerHTML = `<span>${elements.amountInput.value} ${cryptoSelect.value.split(' (')[0]} = ${result} ${currency.toUpperCase()}</span>`;
-      } catch (error) {
-        console.error('Error calculating conversion:', error);
-        calculatorResult.innerHTML = '<span class="error">Error calculating conversion. Please try again later.</span>';
-      } finally {
-        loadingIndicator.style.display = 'none';
-      }
-    }
-
-    async function fetchCryptoPrice(cryptoId, currency) {
-      try {
-        const data = await fetchWithRetry(
-          `${API_CONFIG.marketData.baseUrl}/simple/price?ids=${cryptoId}&vs_currencies=${currency}`
-        );
-        return data[cryptoId][currency];
-      } catch (error) {
-        console.error('Error fetching crypto price:', error);
-        throw error;
-      }
-    }
-  } else {
-    console.error('Crypto Calculator elements not found');
+  if (Object.values(elements).some(el => !el)) {
+    console.error('Missing required elements');
+    return;
   }
+
+  let selectedCryptoId = '';
+  const { cryptoSelect, cryptoSuggestions, loadingIndicator, tradingViewChart, priceChart, tokenDetails, calculatorResult } = elements;
+
+  const coinGeckoToTradingView = {
+    'bitcoin': 'BINANCE:BTCUSDT',
+    'ethereum': 'BINANCE:ETHUSDT',
+    'binancecoin': 'BINANCE:BNBUSDT',
+    'the-open-network': 'BINANCE:TONUSDT',
+    'solana': 'BINANCE:SOLUSDT',
+    'cardano': 'BINANCE:ADAUSDT',
+    'ripple': 'BINANCE:XRPUSDT',
+    'dogecoin': 'BINANCE:DOGEUSDT',
+    'polkadot': 'BINANCE:DOTUSDT',
+    'chainlink': 'BINANCE:LINKUSDT'
+  };
+
+  const debounce = (func, delay) => {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), delay);
+    };
+  };
+
+  const fetchWithRetry = async (url, options = {}, retries = 3, delay = 1000) => {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const response = await fetch(url, { ...options, signal: AbortSignal.timeout(5000) });
+        if (!response.ok) throw new Error(`API error: ${response.status}`);
+        return await response.json();
+      } catch (err) {
+        if (i === retries - 1) throw err;
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  };
+
+  const API_CONFIG = {
+    marketData: {
+      baseUrl: 'https://api.coingecko.com/api/v3',
+      endpoints: {
+        search: '/search'
+      }
+    }
+  };
+
+  const fetchSuggestions = debounce(async (query) => {
+    if (query.length < 2) return cryptoSuggestions.style.display = 'none';
+    if (suggestionCache.has(query)) {
+      const { data, timestamp } = suggestionCache.get(query);
+      if (Date.now() - timestamp < CACHE_TTL) return renderSuggestions(data);
+    }
+    try {
+      loadingIndicator.style.display = 'block';
+      const url = `${API_CONFIG.marketData.baseUrl}${API_CONFIG.marketData.endpoints.search}?query=${encodeURIComponent(query)}`;
+      const data = await fetchWithRetry(url);
+      suggestionCache.set(query, { data, timestamp: Date.now() });
+      renderSuggestions(data);
+    } catch (err) {
+      console.error('Suggestions error:', err);
+    } finally {
+      loadingIndicator.style.display = 'none';
+    }
+  }, 150);
+
+  const renderSuggestions = (data) => {
+    cryptoSuggestions.innerHTML = '';
+    if (!data.coins.length) {
+      const fallback = coinGeckoToTradingView['bitcoin'];
+      updateTradingViewChart('bitcoin');
+      return;
+    }
+    data.coins.slice(0, 5).forEach(coin => {
+      const li = document.createElement('li');
+      li.textContent = `${coin.name} (${coin.symbol.toUpperCase()})`;
+      li.dataset.id = coin.id;
+      li.onclick = () => {
+        cryptoSelect.value = li.textContent;
+        selectedCryptoId = coin.id;
+        cryptoSuggestions.style.display = 'none';
+        fetchTokenDetails(coin.id);
+        updateTradingViewChart(coin.id);
+      };
+      cryptoSuggestions.appendChild(li);
+    });
+    cryptoSuggestions.style.display = 'block';
+  };
+
+  const fetchTokenDetails = async (id) => {
+    if (tokenCache.has(id)) {
+      const { data, timestamp } = tokenCache.get(id);
+      if (Date.now() - timestamp < CACHE_TTL) return renderTokenDetails(data);
+    }
+    try {
+      loadingIndicator.style.display = 'block';
+      const url = `${API_CONFIG.marketData.baseUrl}/coins/${id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false`;
+      const data = await fetchWithRetry(url);
+      tokenCache.set(id, { data, timestamp: Date.now() });
+      renderTokenDetails(data);
+    } catch (err) {
+      console.error('Token detail error:', err);
+    } finally {
+      loadingIndicator.style.display = 'none';
+    }
+  };
+
+  const renderTokenDetails = (data) => {
+    elements.tokenName.textContent = `Name: ${data.name}`;
+    elements.tokenSymbol.textContent = `Symbol: ${data.symbol.toUpperCase()}`;
+    elements.tokenPrice.textContent = `Price: $${data.market_data.current_price.usd.toFixed(2)}`;
+    elements.tokenMarketCap.textContent = `Market Cap: $${(data.market_data.market_cap.usd / 1e9).toFixed(2)}B`;
+    elements.tokenVolume.textContent = `24h Volume: $${(data.market_data.total_volume.usd / 1e6).toFixed(2)}M`;
+    elements.tokenChange.textContent = `24h Change: ${data.market_data.price_change_percentage_24h.toFixed(2)}%`;
+    elements.tokenCreationDate.textContent = `Creation Date: ${data.genesis_date || 'Not Available'}`;
+    elements.tokenOwner.textContent = `Owner: ${data.links?.homepage[0] ? new URL(data.links.homepage[0]).hostname : 'Not Available'}`;
+    elements.tokenDetails.style.display = 'block';
+  };
+
+  const initTradingViewChart = (cryptoId) => {
+    if (!window.TradingView) {
+      const script = document.createElement('script');
+      script.src = 'https://s3.tradingview.com/tv.js';
+      script.async = true;
+      script.onload = () => createTradingViewWidget(cryptoId);
+      script.onerror = () => console.error('TradingView script failed');
+      document.head.appendChild(script);
+    } else {
+      createTradingViewWidget(cryptoId);
+    }
+  };
+
+  const createTradingViewWidget = (cryptoId) => {
+    const symbol = coinGeckoToTradingView[cryptoId] || 'BINANCE:BTCUSDT';
+    const isMobile = window.innerWidth <= 768;
+    tradingViewChart.innerHTML = '';
+    tradingViewWidget = new TradingView.widget({
+      width: '100%',
+      height: isMobile ? 450 : 650,
+      symbol,
+      interval: 'W',
+      range: '1M',
+      timezone: 'Etc/UTC',
+      theme: document.body.classList.contains('dark-mode') ? 'dark' : 'light',
+      style: '1',
+      locale: 'en',
+      container_id: 'tradingview-chart'
+    });
+    priceChart.style.display = 'block';
+  };
+
+  const updateTradingViewChart = (cryptoId) => {
+    const symbol = coinGeckoToTradingView[cryptoId] || 'BINANCE:BTCUSDT';
+    if (tradingViewWidget) {
+      tradingViewWidget.setSymbol(symbol, 'W');
+    } else {
+      initTradingViewChart(cryptoId);
+    }
+  };
+
+  elements.calculateBtn.onclick = calculateConversion;
+  elements.amountInput.onkeypress = (e) => {
+    if (e.key === 'Enter') calculateConversion();
+  };
+
+  async function calculateConversion() {
+    const amount = parseFloat(elements.amountInput.value);
+    const currency = elements.currencySelect.value;
+    if (!selectedCryptoId || isNaN(amount)) return;
+    try {
+      loadingIndicator.style.display = 'block';
+      const url = `${API_CONFIG.marketData.baseUrl}/simple/price?ids=${selectedCryptoId}&vs_currencies=${currency}`;
+      const data = await fetchWithRetry(url);
+      const price = data[selectedCryptoId][currency];
+      const result = (amount * price).toFixed(2);
+      calculatorResult.innerHTML = `<span>${amount} ${selectedCryptoId} = ${result} ${currency.toUpperCase()}</span>`;
+    } catch (err) {
+      console.error('Conversion error:', err);
+    } finally {
+      loadingIndicator.style.display = 'none';
+    }
+  }
+
+  cryptoSelect.addEventListener('input', e => fetchSuggestions(e.target.value));
+  cryptoSelect.addEventListener('focus', () => {
+    if (cryptoSelect.value) fetchSuggestions(cryptoSelect.value);
+  });
+});
+
+
+
+// Add to script.js
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollArrow = document.getElementById('scroll-arrow');
+    if (scrollArrow) {
+        const toggleArrow = () => {
+            const scrollPosition = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const threshold = 300;
+
+            if (scrollPosition > threshold && scrollPosition < documentHeight - windowHeight - threshold) {
+                scrollArrow.classList.remove('hidden');
+                scrollArrow.classList.remove('down');
+                scrollArrow.title = 'Scroll to top';
+            } else if (scrollPosition >= documentHeight - windowHeight - threshold) {
+                scrollArrow.classList.remove('hidden');
+                scrollArrow.classList.add('down');
+                scrollArrow.title = 'Scroll to bottom';
+            } else {
+                scrollArrow.classList.add('hidden');
+            }
+        };
+
+        window.addEventListener('scroll', toggleArrow);
+
+        scrollArrow.addEventListener('click', () => {
+            if (scrollArrow.classList.contains('down')) {
+                window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        toggleArrow(); // Initial check
+    }
+});
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if the device is a desktop (non-touch and screen width >= 1024px)
+    const isDesktop = !('ontouchstart' in window || navigator.maxTouchPoints) && 
+                      window.matchMedia('(min-width: 1024px)').matches;
+
+    if (!isDesktop) {
+        // Hide the custom cursor element on non-desktop devices
+        const customCursor = document.getElementById('customCursor');
+        if (customCursor) customCursor.style.display = 'none';
+        return;
+    }
+
+    // Apply desktop cursor class to body
+    document.body.classList.add('desktop-cursor');
+
+    const customCursor = document.getElementById('customCursor');
+    let lastX = 0, lastY = 0;
+
+    // Track mouse movement with requestAnimationFrame for smoother updates
+    const updateCursorPosition = (e) => {
+        lastX = e.clientX;
+        lastY = e.clientY;
+        requestAnimationFrame(() => {
+            customCursor.style.left = `${lastX}px`;
+            customCursor.style.top = `${lastY}px`;
+            customCursor.classList.remove('hidden');
+        });
+    };
+
+    document.addEventListener('mousemove', updateCursorPosition);
+
+    // Hide cursor when mouse leaves the window
+    document.addEventListener('mouseout', (e) => {
+        if (!e.relatedTarget && !e.toElement) {
+            requestAnimationFrame(() => {
+                customCursor.classList.add('hidden');
+            });
+        }
+    });
+
+    // Add hover effect for interactive elements
+    const interactiveElements = document.querySelectorAll('a, button, input, [role="button"]');
+    interactiveElements.forEach(element => {
+        element.addEventListener('mouseenter', () => {
+            customCursor.classList.add('hover');
+        });
+        element.addEventListener('mouseleave', () => {
+            customCursor.classList.remove('hover');
+        });
+    });
 });
