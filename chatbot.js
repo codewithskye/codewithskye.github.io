@@ -59,7 +59,7 @@ function cleanMarkdown(text) {
   text = text.replace(/\*\*([^\*]+)\*\*/g, "<strong>$1</strong>");
   text = text.replace(/\*([^\*]+)\*/g, "<em>$1</em>");
   text = text.replace(/[\u{1F300}-\u{1F9FF}]/gu, "");
-  text = text.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, "<a href='$2' target='_blank'>$1</a>");
+  text = text.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, "<a href='$2'>$1</a>");
   text = text.replace(/(?:^|\n)(\d+\.\s+)([^\n]+)/g, (match, number, content) => `<li>${content.trim()}</li>`);
   text = text.replace(/(?:^|\n)([-*]\s+)([^\n]+)/g, (match, bullet, content) => `<li>${content.trim()}</li>`);
   if (text.match(/\d+\.\s/)) {
@@ -116,7 +116,7 @@ async function fetchAIResponse(query) {
     return cleanedResponse;
   } catch (error) {
     console.error("Error fetching AI response:", error);
-    return "<div class='response-content'><p>Sorry, something went wrong. Please try again or explore Daniel's portfolio at <a href='https://codewithskye.github.io/home.html' target='_blank'>https://codewithskye.github.io/home.html</a>.</p></div>";
+    return "<div class='response-content'><p>Sorry, something went wrong. Please try again or explore Daniel's portfolio at <a href='https://codewithskye.github.io/home.html'>https://codewithskye.github.io/home.html</a>.</p></div>";
   }
 }
 
@@ -150,21 +150,21 @@ function getPortfolioResponse(query) {
           <li>Data analysis</li>
           <li>Crypto/forex technical analysis</li>
         </ul>
-        <p>Learn more at <a href="${page.url}" target="_blank">${page.url}</a></p>
+        <p>Learn more at <a href="${page.url}">${page.url}</a></p>
       </div>
     `;
   } else if (lowerQuery.includes("can you show me your projects")) {
     const page = siteContent.find(p => p.title === "Projects");
     return `
       <div class='response-content'>
-        <p>Check out Daniel's projects at <a href="${page.url}" target="_blank">${page.url}</a>.</p>
+        <p>Check out Daniel's projects at <a href="${page.url}">${page.url}</a>.</p>
       </div>
     `;
   } else if (lowerQuery.includes("how can i contact you")) {
     const page = siteContent.find(p => p.title === "Contact");
     return `
       <div class='response-content'>
-        <p>Reach out to Daniel via <a href="${page.url}" target="_blank">${page.url}</a>.</p>
+        <p>Reach out to Daniel via <a href="${page.url}">${page.url}</a>.</p>
       </div>
     `;
   } else if (lowerQuery.includes("tell me about tech nexus")) {
@@ -179,7 +179,7 @@ function getPortfolioResponse(query) {
           <li>A built-in AI chatbot, Skye AI, to assist users with queries.</li>
           <li>Options to connect instantly via QR codes for WhatsApp, LinkedIn, Telegram, and Instagram.</li>
         </ul>
-        <p>Visitors can explore, stay informed, and utilize these resources, with a newsletter subscription for updates on new features and tools. Ideal for tech enthusiasts, designers, and crypto traders! Visit <a href="${page.url}" target="_blank">${page.url}</a>.</p>
+        <p>Visitors can explore, stay informed, and utilize these resources, with a newsletter subscription for updates on new features and tools. Ideal for tech enthusiasts, designers, and crypto traders! Visit <a href="${page.url}">${page.url}</a>.</p>
       </div>
     `;
   }
@@ -220,7 +220,7 @@ function displaySuggestedQuestions() {
     const suggestion = document.createElement("button");
     suggestion.className = "suggestion-btn";
     if (question === "Continue using AI, click here") {
-      suggestion.innerHTML = `<a href="https://skye.ai" target="_blank">${question}</a>`;
+      suggestion.innerHTML = `<a href="skyeai.html">${question}</a>`;
     } else {
       suggestion.textContent = question;
       suggestion.addEventListener("click", () => {
@@ -269,7 +269,7 @@ async function handleChatbotInput() {
     displayBotMessage(aiResponse);
   } catch (error) {
     removeTypingIndicator();
-    displayBotMessage("<div class='response-content'><p>Sorry, something went wrong. Please try again or explore Daniel's portfolio at <a href='https://codewithskye.github.io/home.html' target='_blank'>https://codewithskye.github.io/home.html</a>.</p></div>");
+    displayBotMessage("<div class='response-content'><p>Sorry, something went wrong. Please try again or explore Daniel's portfolio at <a href='https://codewithskye.github.io/home.html'>https://codewithskye.github.io/home.html</a>.</p></div>");
   }
 }
 
