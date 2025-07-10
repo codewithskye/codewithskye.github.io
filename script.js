@@ -42,7 +42,7 @@ const API_CONFIG = {
     news: {
         provider: "GNews",
         baseUrl: "https://gnews.io/api/v4",
-        // apiKey: "4f22c2719a98d05aadb57665940b8c6a",
+        apiKey: "4f22c2719a98d05aadb57665940b8c6a",
         endpoint: "/top-headlines"
     },
     geolocation: {
