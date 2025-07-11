@@ -42,7 +42,7 @@ const API_CONFIG = {
     news: {
         provider: "GNews",
         baseUrl: "https://gnews.io/api/v4",
-        // apiKey: "4f22c2719a98d05aadb57665940b8c6a",
+        apiKey: "4f22c2719a98d05aadb57665940b8c6a",
         endpoint: "/top-headlines"
     },
     geolocation: {
@@ -2282,70 +2282,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Check if current page is index.html
-    const isIndexPage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '/index';
-
-    if (!isIndexPage) {
-        // Exit: use default browser cursor on all other pages
-        return;
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("keydown", e => {
+    if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S")) {
+        e.preventDefault();
     }
-
-    // Check if the device is a desktop
-    const isDesktop = !('ontouchstart' in window || navigator.maxTouchPoints) && 
-                      window.matchMedia('(min-width: 1024px)').matches;
-
-    if (!isDesktop) {
-        const customCursor = document.getElementById('customCursor');
-        if (customCursor) customCursor.style.display = 'none';
-        return;
+    if (e.keyCode === 123) {
+        e.preventDefault();
     }
-
-    // Apply desktop cursor class
-    document.body.classList.add('desktop-cursor');
-
-    const customCursor = document.getElementById('customCursor');
-    let lastX = 0, lastY = 0;
-
-    const updateCursorPosition = (e) => {
-        lastX = e.clientX;
-        lastY = e.clientY;
-        requestAnimationFrame(() => {
-            customCursor.style.left = `${lastX}px`;
-            customCursor.style.top = `${lastY}px`;
-            customCursor.classList.remove('hidden');
-        });
-    };
-
-    document.addEventListener('mousemove', updateCursorPosition);
-
-    document.addEventListener('mouseout', (e) => {
-        if (!e.relatedTarget && !e.toElement) {
-            requestAnimationFrame(() => {
-                customCursor.classList.add('hidden');
-            });
-        }
-    });
-
-    const interactiveElements = document.querySelectorAll('a, button, input, [role="button"]');
-    interactiveElements.forEach(element => {
-        element.addEventListener('mouseenter', () => {
-            customCursor.classList.add('hover');
-        });
-        element.addEventListener('mouseleave', () => {
-            customCursor.classList.remove('hover');
-        });
-    });
 });
-
-// document.addEventListener("contextmenu", e => e.preventDefault());
-// document.addEventListener("keydown", e => {
-//     if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S")) {
-//         e.preventDefault();
-//     }
-//     if (e.keyCode === 123) { // F12
-//         e.preventDefault();
-//     }
-// });
