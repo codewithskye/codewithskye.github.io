@@ -2282,6 +2282,262 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
+class AIChatbot {
+    constructor(page = "default") {
+        this.page = page;
+        this.isOpen = false;
+        this.suggestionsData = [];
+        this.popSound = new Audio('pop.mp3');
+        this.resetNextOpen = false;
+        this.init();
+    }
+
+    init() {
+        this.createChatbotHTML();
+        this.bindEvents();
+        this.showWelcomeMessage();
+    }
+
+    createChatbotHTML() {
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'ai-chatbot-toggle';
+        toggleBtn.innerHTML = '<i class="bx bx-bot"></i>';
+        toggleBtn.setAttribute('aria-label', 'Open Skye AI Assistant');
+        document.body.appendChild(toggleBtn);
+
+        const widget = document.createElement('div');
+        widget.className = 'ai-chatbot-widget';
+        widget.innerHTML = `
+            <div class="ai-chatbot-header">
+                <h3>Skye AI Assistant</h3>
+                <button class="ai-chatbot-close" aria-label="Close chat">
+                    <i class="bx bx-x"></i>
+                </button>
+            </div>
+            <div class="ai-chatbot-messages" id="ai-messages"></div>
+            <div class="ai-chatbot-input">
+                <input type="text" placeholder="Type your message..." id="ai-input" autocomplete="off">
+                <button class="ai-send-btn" id="ai-send" aria-label="Send message">
+                    <i class="bx bx-send"></i>
+                </button>
+            </div>
+        `;
+        document.body.appendChild(widget);
+
+        this.toggleBtn = toggleBtn;
+        this.widget = widget;
+        this.messagesContainer = widget.querySelector('#ai-messages');
+        this.input = widget.querySelector('#ai-input');
+        this.sendBtn = widget.querySelector('#ai-send');
+    }
+
+    bindEvents() {
+        this.toggleBtn.addEventListener('click', () => this.toggleChat());
+        this.widget.querySelector('.ai-chatbot-close').addEventListener('click', () => this.closeChat());
+        this.sendBtn.addEventListener('click', () => this.sendMessage());
+        this.input.addEventListener('keypress', e => {
+            if (e.key === 'Enter') this.sendMessage();
+        });
+    }
+
+    toggleChat() {
+        this.isOpen ? this.closeChat() : this.openChat();
+    }
+
+    openChat() {
+        this.isOpen = true;
+        this.widget.classList.add('active');
+        this.input.focus();
+
+        if (this.resetNextOpen) {
+            this.messagesContainer.innerHTML = '';
+            this.resetNextOpen = false;
+        }
+
+        this.showWelcomeMessage();
+    }
+
+    closeChat() {
+        this.isOpen = false;
+        this.widget.classList.remove('active');
+    }
+
+    showWelcomeMessage() {
+        this.setSuggestions();
+
+        // Prevent duplicate greeting
+        if (!this.messagesContainer.querySelector('.welcome-message')) {
+            const msg = document.createElement('div');
+            msg.className = 'ai-message bot welcome-message';
+            msg.textContent = this.getWelcomeMessage();
+            this.messagesContainer.appendChild(msg);
+        }
+
+        this.showSuggestions();
+
+        if (this.page === "technexus") {
+            setTimeout(() => this.addWhatsAppCTA(), 300);
+        }
+    }
+
+    getWelcomeMessage() {
+        switch (this.page) {
+            case "technexus":
+                return "👋 Hey crypto trader! Need quick access to tools or news?";
+            case "home":
+                return "👋 Welcome! I’m Skye AI Assistant. Let’s explore my portfolio.";
+            case "projects":
+                return "👋 Looking for a specific project? I’m here to help.";
+            default:
+                return "👋 Welcome! I’m Skye AI Assistant. Need quick access?";
+        }
+    }
+
+    sendMessage() {
+        const message = this.input.value.trim();
+        if (!message) return;
+
+        this.addMessage(message, 'user');
+        this.input.value = '';
+        this.showTyping();
+
+        setTimeout(() => {
+            this.hideTyping();
+            const response = this.generateResponse(message);
+            this.addMessage(response, 'bot');
+            this.showSuggestions();
+        }, 1000);
+    }
+
+    addMessage(text, type) {
+        const msg = document.createElement('div');
+        msg.className = `ai-message ${type}`;
+        msg.textContent = text;
+        this.messagesContainer.appendChild(msg);
+        this.scrollToBottom();
+    }
+
+    showTyping() {
+        const typing = document.createElement('div');
+        typing.className = 'ai-typing';
+        typing.id = 'typing-indicator';
+        typing.innerHTML = `Typing
+        <div class="ai-typing-dots">
+            <div class="ai-typing-dot"></div>
+            <div class="ai-typing-dot"></div>
+            <div class="ai-typing-dot"></div>
+        </div>`;
+        this.messagesContainer.appendChild(typing);
+        this.scrollToBottom();
+    }
+
+    hideTyping() {
+        const typing = document.getElementById('typing-indicator');
+        if (typing) typing.remove();
+    }
+
+    scrollToBottom() {
+        this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+    }
+
+    setSuggestions() {
+        if (this.page === "technexus") {
+            this.suggestionsData = [
+                { text: "📊 Blogs", target: "#blog" },
+                { text: "📢 Latest News", target: "#crypto-news" },
+                { text: "📅 Economic Calendar", target: "#economic-calendar" },
+                { text: "📈 Pips Calculator", target: "#pips-calculator" },
+                { text: "🧮 Crypto Converter", target: "#crypto-calculator" },
+                { text: "🔍 Transaction Tracker", target: "#crypto-tracker" },
+                { text: "📊 Live Charts", target: "#crypto-charts" },
+                { text: "🛠 Tools Section", target: "#tools" },
+            ];
+        } else if (this.page === "home") {
+            this.suggestionsData = [
+                { text: "👋 About Me", target: "#about" },
+                { text: "🧠 Skills", target: "#skills" },
+                { text: "📂 Recent Projects", target: "#projects" },
+                { text: "🗣️ Testimonials", target: "#testimonials" },
+                { text: "❓ FAQ", target: "#faq" },
+                { text: "🤝 Let’s collaborate on your next project", target: "#contact" },
+            ];
+        } else {
+            this.suggestionsData = [
+                { text: "Show me projects", target: "#projects" },
+                { text: "How to contact?", target: "#contact" },
+            ];
+        }
+    }
+
+    showSuggestions() {
+        const existing = this.messagesContainer.querySelector('.ai-suggestions');
+        if (existing) existing.remove();
+
+        const suggestionsDiv = document.createElement('div');
+        suggestionsDiv.className = 'ai-suggestions';
+
+        this.suggestionsData.forEach(s => {
+            const btn = document.createElement('button');
+            btn.className = 'ai-suggestion-btn';
+            btn.textContent = s.text;
+            btn.addEventListener('click', () => {
+                this.popSound.currentTime = 0;
+                this.popSound.play();
+
+                if (s.target && document.querySelector(s.target)) {
+                    document.querySelector(s.target).scrollIntoView({ behavior: "smooth" });
+                    history.replaceState(null, null, s.target);
+                    this.resetNextOpen = true;
+                    this.closeChat();
+                } else {
+                    this.input.value = s.text;
+                    this.sendMessage();
+                }
+            });
+            suggestionsDiv.appendChild(btn);
+        });
+
+        this.messagesContainer.appendChild(suggestionsDiv);
+        this.scrollToBottom();
+    }
+
+    addWhatsAppCTA() {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'ai-message bot';
+        wrapper.style.marginTop = "12px";
+
+        const link = document.createElement('a');
+        link.href = "https://wa.me/+2347016794490";
+        link.target = "_blank";
+        link.className = "btn ai-whatsapp-btn";
+        link.innerHTML = `Let's connect on WhatsApp <i class="bx bxl-whatsapp"></i>`;
+
+        wrapper.appendChild(link);
+        this.messagesContainer.appendChild(wrapper);
+        this.scrollToBottom();
+    }
+
+    generateResponse(message) {
+        const msg = message.toLowerCase();
+        if (msg.includes("project")) return "You can view all projects including NeuroMech, DropMint, and more.";
+        if (msg.includes("technexus")) return "Tech Nexus is your go-to for crypto tools, news, and more.";
+        if (msg.includes("contact")) return "You can reach Daniel through the contact section or WhatsApp directly!";
+        return "I'm here to help! Tap any button below to explore.";
+    }
+}
+
+// Initialize on DOM load with page-specific context
+document.addEventListener("DOMContentLoaded", () => {
+    const path = window.location.pathname;
+    let page = "default";
+    if (path.includes("technexus")) page = "technexus";
+    else if (path.includes("home")) page = "home";
+    else if (path.includes("projects")) page = "projects";
+
+    new AIChatbot(page);
+});
+
 document.addEventListener("contextmenu", e => e.preventDefault());
 document.addEventListener("keydown", e => {
     if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S")) {
