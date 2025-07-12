@@ -775,10 +775,10 @@ body.dark-mode nav ul a {
 
 nav ul a:hover {
     opacity: 1;
-    background: var(--gradient);
+    background: linear-gradient(135deg, #0056b3, var(--primary-color));
     background-clip: text;
     -webkit-background-clip: text;
-    color: transparent;
+    animation: magneticHover 0.6s ease-out, elasticScale 0.8s ease-out;
 }
 
 nav ul a.active {
@@ -4006,8 +4006,11 @@ body.dark-mode .welcome-content .cta-button {
 }
 
 .welcome-content .cta-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 27, 96, 0.3);
+    background: linear-gradient(135deg, #0056b3, var(--primary-color));
+    color: white;
+    box-shadow: 0 8px 25px rgba(0, 27, 96, 0.4), 0 0 0 3px rgba(0, 27, 96, 0.1);
+    transform: translateY(-3px) scale(1.05);
+    animation: magneticHover 0.6s ease-out, elasticScale 0.8s ease-out;
 }
 
 body.dark-mode .welcome-content .cta-button:hover {
@@ -4126,19 +4129,28 @@ body.dark-mode .personalize-form input:focus {
 }
 
 .personalize-btn {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 0.4em; 
-    padding: 0.5em 1em; 
-    font-size: 0.85em; 
-    background: var(--gradient);
-    color: #ffffff;
-    border-radius: 20px; 
+    padding: clamp(0.8em, 2vw, 1em) clamp(1.5em, 3vw, 2em);
+    border-radius: 15px;
     border: none;
+    font-size: clamp(0.9em, 3vw, 1em);
+    font-weight: 500;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, var(--primary-color), #001b60);
+    color: white;
     cursor: pointer;
-    margin-top: 0.6em; 
-    animation: gradientGlow 2s ease-in-out infinite;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    outline: none;
+    touch-action: manipulation;
+    box-shadow: 0 4px 15px rgba(0, 27, 96, 0.2);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    animation: glowPulse 3s ease-in-out infinite;
 }
 
 body.dark-mode .personalize-btn {
@@ -5808,9 +5820,11 @@ body.dark-mode #converter-result .loading {
 }
 
 .ai-chatbot-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 25px rgba(0, 27, 96, 0.4);
-    animation: glowPulse 2s ease-in-out infinite;
+    background: linear-gradient(135deg, #0056b3, var(--primary-color));
+    color: white;
+    box-shadow: 0 8px 25px rgba(0, 27, 96, 0.4), 0 0 0 3px rgba(0, 27, 96, 0.1);
+    transform: translateY(-3px) scale(1.05);
+    animation: magneticHover 0.6s ease-out, elasticScale 0.8s ease-out;
 }
 
 .ai-chatbot-widget {
@@ -5924,9 +5938,11 @@ body.dark-mode #converter-result .loading {
 }
 
 .ai-suggestion-btn:hover {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, #0056b3, var(--primary-color));
     color: white;
-    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(0, 27, 96, 0.4), 0 0 0 3px rgba(0, 27, 96, 0.1);
+    transform: translateY(-3px) scale(1.05);
+    animation: magneticHover 0.6s ease-out, elasticScale 0.8s ease-out;
 }
 
 .ai-chatbot-input {
@@ -5968,8 +5984,11 @@ body.dark-mode #converter-result .loading {
 }
 
 .ai-send-btn:hover {
-    transform: scale(1.1);
-}
+    background: linear-gradient(135deg, #0056b3, var(--primary-color));
+    color: white;
+    box-shadow: 0 8px 25px rgba(0, 27, 96, 0.4), 0 0 0 3px rgba(0, 27, 96, 0.1);
+    transform: translateY(-3px) scale(1.05);
+    animation: magneticHover 0.6s ease-out, elasticScale 0.8s ease-out;}
 
 .ai-typing {
     display: flex;
