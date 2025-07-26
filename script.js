@@ -1526,16 +1526,7 @@ function showPopup(popup, greetingText, timeDateDisplay, closePopup, pageType) {
         if (popup) {
             setTimeout(() => {
                 if (pageType === 'index') {
-                    const userName = localStorage.getItem('userName');
-                    const userNameDisplays = document.querySelectorAll('#user-name-display');
-                    if (userName && userNameDisplays.length > 0) {
-                        userNameDisplays.forEach(display => {
-                            display.textContent = userName;
-                        });
-                    }
-                    if (greetingText && userName) {
-                        greetingText.textContent = `${getGreeting()} ${userName}, welcome to my portfolio!`;
-                    } else if (greetingText) {
+                    if (greetingText) {
                         greetingText.textContent = `${getGreeting()}, welcome to my portfolio!`;
                     }
                 } else if (pageType === 'technexus') {
@@ -1543,6 +1534,7 @@ function showPopup(popup, greetingText, timeDateDisplay, closePopup, pageType) {
                         greetingText.textContent = 'Welcome to Tech Nexus!';
                     }
                 }
+        
                 popup.classList.add('visible');
                 updateTimeDate();
                 setInterval(updateTimeDate, 1000);
@@ -1579,9 +1571,6 @@ function showPopup(popup, greetingText, timeDateDisplay, closePopup, pageType) {
         window.dispatchEvent(new Event('resize'));
     });
 });
-
-
-
 
 // Excel to PDF Converter
 const excelDropZone = document.getElementById('excel-drop-zone');
@@ -2344,5 +2333,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
-
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("keydown", e => {
+    if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S")) {
+        e.preventDefault();
+    }
+    if (e.keyCode === 123) {
+        e.preventDefault();
+    }
+});
