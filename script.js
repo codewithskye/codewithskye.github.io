@@ -2262,6 +2262,8 @@ class AIChatbot {
         return "I'm here to help! Tap any button below to explore.";
     }
 }
+const bodyClass = document.body.classList.contains('index-page') ? 'index' : 'default';
+const chatbot = new AIChatbot(bodyClass);
 
 
 document.addEventListener("DOMContentLoaded", () => {
