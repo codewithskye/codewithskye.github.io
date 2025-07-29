@@ -2193,6 +2193,11 @@ class AIChatbot {
                 { text: "🤝 Let’s collaborate on your next project", target: "#contact" },
                 { text: "🚀 Don’t miss out! Join my newsletter today.", target: "#newsletter" },
             ];
+        } else if (this.page === "projects") {
+            this.suggestionsData = [
+                { text: "Show me projects", target: "#projects" },
+                { text: "How to contact?", target: "#contact" },
+            ];
         } else {
             this.suggestionsData = [
                 { text: "Show me projects", target: "#projects" },
@@ -2262,19 +2267,17 @@ class AIChatbot {
         return "I'm here to help! Tap any button below to explore.";
     }
 }
-const bodyClass = document.body.classList.contains('index-page') ? 'index' : 'default';
-const chatbot = new AIChatbot(bodyClass);
 
+/* ✅ Detect the page from URL instead of body class */
+const currentPage = window.location.pathname === "/" || window.location.pathname.includes("index")
+    ? "index"
+    : window.location.pathname.includes("technexus")
+        ? "technexus"
+        : window.location.pathname.includes("projects")
+            ? "projects"
+            : "default";
 
-document.addEventListener("DOMContentLoaded", () => {
-    const path = window.location.pathname;
-    let page = "default";
-    if (path.includes("technexus")) page = "technexus";
-    else if (path.includes("index")) page = "index";
-    else if (path.includes("projects")) page = "projects";
-
-    new AIChatbot(page);
-});
+const chatbot = new AIChatbot(currentPage);
 
 
 document.addEventListener('DOMContentLoaded', () => {
