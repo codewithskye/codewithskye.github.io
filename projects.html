@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Explore the creative projects of Daniel Owolabi, including UI/UX design, web development, graphics design, and video editing.">
+        <meta name="author" content="Daniel Owolabi">
+        <title>Projects - Daniel Owolabi</title>
+      
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+        <!-- Styles -->
+        <link rel="stylesheet" href="style.css">
+        <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+      
+        <!-- Favicons -->
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+        <link rel="manifest" href="site.webmanifest">
+      
+        <!-- JSON-LD Schema -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Projects - Daniel Owolabi",
+          "description": "Explore the creative projects of Daniel Owolabi, including UI/UX design, web development, graphics design, and video editing.",
+          "url": "https://codewithskye.github.io/projects.html",
+          "author": {
+            "@type": "Person",
+            "name": "Daniel Owolabi",
+            "url": "https://codewithskye.github.io/"
+          },
+          "hasPart": [
+            {
+              "@type": "CreativeWork",
+              "name": "UI/UX Design Projects"
+            },
+            {
+              "@type": "CreativeWork",
+              "name": "Web Development Projects"
+            },
+            {
+              "@type": "CreativeWork",
+              "name": "Graphics Design Projects"
+            },
+            {
+              "@type": "CreativeWork",
+              "name": "Video Editing Projects"
+            }
+          ]
+        }
+    </script>
+    <style>
+        .project-links {
+            margin-top: 1.5em;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+    
+        .project-links .demo-btn {
+            padding: clamp(0.8em, 2vw, 1em) clamp(1.5em, 3vw, 2em);
+            border-radius: 15px;
+            border: none;
+            font-size: clamp(0.9em, 3vw, 1em);
+            font-weight: 500;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, var(--primary-color), #001b60);
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            outline: none;
+            touch-action: manipulation;
+            box-shadow: 0 4px 15px rgba(0, 27, 96, 0.2);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+    
+        .project-links .demo-btn:hover {
+            background: linear-gradient(135deg, #0056b3, var(--primary-color));
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 27, 96, 0.4), 0 0 0 3px rgba(0, 27, 96, 0.1);
+            transform: translateY(-3px) scale(1.05);
+            animation: magneticHover 0.6s ease-out, elasticScale 0.8s ease-out;
+        }
+    
+        @keyframes waterFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    
+        .project-links .visit-link {
+            color: #001b60;
+            font-weight: 600;
+            font-size: 1em;
+            text-decoration: underline;
+            position: relative;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+    
+        .project-links .visit-link:hover {
+            text-decoration: none;
+        }
+    
+        .project-links .visit-link::after {
+            content: '↗';
+            opacity: 0;
+            transform: translateX(-5px);
+            transition: all 0.3s ease;
+            margin-left: 6px;
+        }
+    
+        .project-links .visit-link:hover::after {
+            opacity: 1;
+            transform: translateX(2px);
+        }
+    
+        /* 🔁 Responsive adjustments */
+        @media screen and (max-width: 600px) {
+            .project-links {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+    
+            .project-links .demo-btn,
+            .project-links .visit-link {
+                width: 100%;
+            }
+    
+            .project-links .visit-link {
+                margin-top: 0.5rem;
+                font-size: 1rem;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="mobile-scroll">
+        <a href="index.html" class="logo"><h2>Skye</h2></a>
+        <div class="menu-toggle-container">
+            <div class="mode-toggle" title="Toggle Dark Mode">
+                <i class='bx bx-moon' id="dark-mode-toggle"></i>
+            </div>
+            <div class="menu-toggle">
+                <i class='bx bx-menu-alt-right' id="menu-open"></i>
+                <i class='bx bx-x' id="menu-close" style="display: none;"></i>
+            </div>
+        </div>
+        <ul class="links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="technexus.html">Tech Nexus <span class="new-badge">New</span></a></li>
+            <li><a href="contact.html" class="btn nav-btn">Contact Me <i class='bx bxs-chevron-right'></i></a></li>
+        </ul>
+        <div class="nav-right">
+            <a href="contact.html" class="btn nav-btn">Contact Me <i class='bx bxs-chevron-right'></i></a>
+            <div class="mode-toggle" title="Toggle Dark Mode">
+                <i class='bx bx-moon' id="dark-mode-toggle"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Projects Section -->
+    <section id="projects" class="content-section projects-page">
+        <div class="projects-header">
+            <h1 class="header mobile-scroll">Projects</h1>
+        </div>
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="ui/ux-design">UI/UX Designs</button>
+            <button class="filter-btn" data-filter="website-design">Website Design</button>
+            <button class="filter-btn" data-filter="graphics-design">Graphics Design</button>
+            <!-- <button class="filter-btn" data-filter="video-editing">Video Editing</button> -->
+        </div>
+        <div class="projects-container">
+
+            <!-- website design section -->
+
+            <div class="project-card mobile-scroll" data-category="website-design">
+                <img src="images/NeuroMech-webd.webp" alt="NeuroMech 3D Landing Page" onerror="this.src='https://via.placeholder.com/800x400?text=NeuroMech+Landing+Page';">
+                <h3><span>NeuroMech 3D Interactive Landing Page</span></h3><br>
+            
+                <p class="project-description">
+                    💡 <strong>Project Overview:</strong> NeuroMech is a robotics company at the forefront of human-AI collaboration. This landing page was developed to showcase the product’s futuristic vision using an interactive 3D robot powered by Spline. The site blends strong visual identity with smooth UI/UX and somewhat responsive.
+                </p>
+            
+                <p class="project-description">
+                    ❌ <strong>Problem:</strong> Most robotics or AI websites either rely too heavily on technical jargon or fail to visually capture the innovation behind the tech. Users are left uninspired or overwhelmed, resulting in low engagement or bounce.
+                </p>
+            
+                <p class="project-description">
+                    🎯 <strong>Goal:</strong> Design a captivating, responsive landing page that introduces NeuroMech as a future-first robotics company. The goal was to combine immersive 3D elements with clear messaging and intuitive navigation.
+                </p>
+            
+                <p class="project-description">
+                    ✅ <strong>Solution:</strong> A full-screen hero section featuring an animated 3D robot using <strong>Spline</strong> draws users in immediately. Paired with bold typography, hover animations, and a sleek hamburger menu, the design offers both functionality and visual flair. The layout was structured for clarity, with CTAs like "See How It Works" and "Try the Demo" guiding user interaction.
+                </p>
+            
+                <p class="project-description">
+                    📌 <strong>Case Study:</strong> The interactive landing page was built using <strong>HTML, CSS, JavaScript</strong>, and <strong>Spline</strong> for real-time 3D motion. Animations were lightweight for performance, and every section reinforces the concept of intelligent, engineered design. This project showcases how immersive visuals can elevate brand storytelling on the web.
+                </p>
+            
+                <div class="project-links">
+                    <a href="https://codewithskye.github.io/NeuroMech/" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 Visit Site <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="project-card mobile-scroll" data-category="website-design">
+                <img src="images/Dropmint-webd.webp" alt="DropMint DeFi Landing Page" onerror="this.src='https://via.placeholder.com/800x400?text=DropMint+DeFi+Landing+Page';">
+                <h3><span>DropMint – DeFi Airdrop & Community Platform</span></h3><br>
+            
+                <p class="project-description">
+                    💡 <strong>Project Overview:</strong> This version of DropMint is centered on community, mission, and transparency within decentralized finance (DeFi). The landing page was designed to introduce users to DropMint’s values, team, roadmap, and airdrop ecosystem. With an emphasis on trust, accessibility, and storytelling, the layout offers users a welcoming entry point into the crypto world.
+                </p>
+            
+                <p class="project-description">
+                    ❌ <strong>Problem:</strong> Many DeFi platforms lack clarity in their mission or overwhelm users with overly technical content. This creates hesitation and discourages participation, especially from new or curious users interested in joining the crypto space.
+                </p>
+            
+                <p class="project-description">
+                    🎯 <strong>Goal:</strong> Create an approachable yet informative DeFi landing page that explains the DropMint ecosystem, outlines key benefits of participation, and encourages users to join the community. The content strategy was designed to balance crypto credibility with narrative clarity.
+                </p>
+            
+                <p class="project-description">
+                    ✅ <strong>Solution:</strong> The site features a strong hero section with calls to action, followed by structured sections like “About DropMint,” “Airdrop Rewards,” and “Key Features.” A visual roadmap shows planned growth from Q3 2025 through Q1 2026, while a detailed FAQ and social callouts help onboard and retain community members. The UI was crafted for readability, with subtle interactions and responsive design throughout.
+                </p>
+            
+                <p class="project-description">
+                    📌 <strong>Case Study:</strong> Built using <strong>HTML, CSS, and JavaScript</strong>, the page includes scroll-based interactions, accordion FAQ toggles, and mobile-friendly layouts. The voice of the brand is mission-focused, emphasizing innovation, transparency, and empowerment. Design choices such as whitespace, soft gradients, and modern typography help communicate trust. Clear navigation and bold CTAs guide users toward community platforms (Telegram, Discord, Twitter) and direct participation.
+                </p>
+            
+                <div class="project-links">
+                    <a href="https://codewithskye.github.io/Dropmint_/" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 Visit Site <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="project-card mobile-scroll" data-category="website-design">
+                <img src="images/Dropmint (1).webp" alt="DropMint Crypto Airdrop Website" onerror="this.src='https://via.placeholder.com/800x400?text=DropMint+Landing+Page';">
+                <h3><span>DropMint – Crypto Airdrop Landing Page</span></h3><br>
+            
+                <p class="project-description">
+                    💡 <strong>Project Overview:</strong> DropMint is a futuristic crypto airdrop platform designed to onboard users to the next wave of token distribution. This landing page showcases a countdown to launch, feature highlights, roadmap milestones, and an interactive claim process. Built to convert and inform, it blends clean UI with dynamic blockchain messaging.
+                </p>
+            
+                <p class="project-description">
+                    ❌ <strong>Problem:</strong> Many airdrop websites lack trust signals, engaging design, or a clear explanation of how the process works. This often leads to user confusion, drop-offs, and poor conversion rates during critical token launches.
+                </p>
+            
+                <p class="project-description">
+                    🎯 <strong>Goal:</strong> Build a clear, secure, and visually engaging landing page for DropMint that builds hype, educates visitors on claiming tokens, and supports a real-time countdown to launch. Design was focused on clarity, urgency, and credibility.
+                </p>
+            
+                <p class="project-description">
+                    ✅ <strong>Solution:</strong> The landing page opens with a high-impact hero section including a countdown timer and call-to-action buttons like “Claim Airdrop” and “Learn More.” Feature sections highlight blockchain transparency, yield potential, and community trust. Additional components include a dynamic roadmap, statistics (total supply, adopters, etc.), and a step-by-step “How It Works” flow. Responsive and styled for both mobile and desktop users.
+                </p>
+            
+                <p class="project-description">
+                    📌 <strong>Case Study:</strong> The site was built using <strong>HTML, CSS, and JavaScript</strong>, with custom countdown functionality and mobile-optimized layout. Emphasis was placed on performance and UX flow — CTAs are visually prioritized, while the roadmap and FAQs help build legitimacy. Animated stats counters and scroll reveal effects were used to increase engagement and drive user interaction.
+                </p>
+            
+                <div class="project-links">
+                    <a href="https://codewithskye.github.io/Dropmint/" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 Visit Site <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="project-card mobile-scroll" data-category="website-design">
+                <img src="images/NestVibe (1).png" alt="NestVibe Realty Website" onerror="this.src='https://via.placeholder.com/800x400?text=NestVibe+Realty';">
+                <h3><span>NestVibe Realty – Real Estate Website</span></h3><br>
+            
+                <p class="project-description">
+                    💡 <strong>Project Overview:</strong> NestVibe Realty is a modern real estate platform offering comfortable, affordable rental properties across the U.S. This fully responsive site was built to highlight available listings, team profiles, and partner credibility, while enabling users to search by state, city, and property type.
+                </p>
+            
+                <p class="project-description">
+                    ❌ <strong>Problem:</strong> Many rental property sites are outdated, cluttered, or lack personalization. Users often struggle to filter properties, view team contacts, or trust the listings due to poor UX and presentation.
+                </p>
+            
+                <p class="project-description">
+                    🎯 <strong>Goal:</strong> Create a clean, intuitive real estate landing page that helps users easily explore listings, understand NestVibe’s mission, and connect with agents — all while reflecting trust, comfort, and professionalism.
+                </p>
+            
+                <p class="project-description">
+                    ✅ <strong>Solution:</strong> The design combines a hero with CTA buttons, a custom-built filter system (state, city, type), and visually engaging sections like “Featured Properties,” “Meet Our Team,” and “What Our Tenants Say.” Built with <strong>HTML, CSS, and JavaScript</strong>, it uses semantic structure and responsive layout techniques to ensure accessibility and smooth browsing.
+                </p>
+            
+                <p class="project-description">
+                    📌 <strong>Case Study:</strong> Designed to support both tenant browsing and trust-building, NestVibe Realty’s site includes optimized layout grids, smart filtering, and human-centered content. The testimonials and partner sections reinforce brand credibility, while touch-friendly elements ensure usability on all devices. A clean visual hierarchy and subtle animations help highlight important actions like “Rent Now” and “Buy Now.”
+                </p>
+            
+                <div class="project-links">
+                    <a href="https://codewithskye.github.io/nestvibe/" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 Visit Live Site <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            
+
+            <div class="project-card mobile-scroll" data-category="website-design">
+                <img src="images/Shopdart.png" alt="ShopDart" onerror="this.src='https://via.placeholder.com/800x400?text=ShopDart';">
+                <h3><span>ShopDart - A Live Multi Vendor E-commerce Website</span></h3>
+                <p class="project-description">Category: Website Design</p>
+                <p class="project-description">Description: ShopDart is a live e-commerce website offering trendy, high-quality fashion with a fast and user-focused shopping experience. The hero section features a bold, modern layout that speaks to style and convenience.</p>
+                <p class="project-description">Tagline: “Shop Smarter, Live Better.”</p>
+                <p class="project-description">
+                    - Clean design with smooth gradients and lifestyle imagery<br>
+                    - One-click shopping with a clear Start Shopping CTA<br>
+                    - Live cart updates, user account access, and responsive navigation<br>
+                    - Built for performance, designed for elegance.
+                </p>
+                <p class="project-description">Case Study: The challenge was to create an e-commerce platform that balanced aesthetics with functionality for multiple vendors. By prioritizing a seamless user journey, I implemented a responsive design with intuitive navigation and real-time cart updates. User testing revealed a 30% increase in checkout completion due to the streamlined interface.</p>
+                <div class="project-links">
+                    <a href="https://shopdart.42web.io" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 Visit Site<i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card mobile-scroll" data-category="website-design">
+                <img src="images/bbt.jpg" alt="BBT Generating" onerror="this.src='https://via.placeholder.com/800x400?text=BBT+Generating';">
+                <h3><span>BBT Generating – Smart Conversations, Smarter Design</span></h3>
+                <p class="project-description">Category: Website Design</p>
+                <p class="project-description">Description: A modern, AI-focused landing page created with usability and visual impact in mind. This hero section introduces BBT Generating, an AI chatbot designed to deliver the best prompts for smarter conversations.</p>
+                <p class="project-description">
+                    - Bold, typographic headline for instant engagement<br>
+                    - 3D keyboard visual with glowing AI key<br>
+                    - Clear CTAs: “Get Started” and “Our Pricing”<br>
+                    - Subtle gradients and shadows for a premium feel<br>
+                    - Testimonial block to build trust<br>
+                    - Green accent for action and brand identity
+                </p>
+                <p class="project-description">Case Study: The goal was to design a landing page that communicated AI innovation while being approachable. I used a bold headline and 3D visuals to capture attention, paired with clear CTAs to guide users. A/B testing showed that the green-accented CTA increased clicks by 25%, enhancing user interaction.</p>
+                <p class="project-description">Note: Optimized for desktop users. 3D effects and animations are best viewed on larger screens.</p>
+
+                <div class="project-links">
+                    <a href="https://purple-term-0787.animaapp.io/?v=bba12ee3-7734-4bb5-965b-589ad958b2c9" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 Visit Site<i class='bx bx-play-circle'></i>
+                    </a>
+
+                </div>
+            </div>
+            
+            <!-- ui ux design section -->
+
+        <div class="project-card mobile-scroll" data-category="ui/ux-design">
+            <img src="images/keyboard (1).png" alt="Yorùbá Mobile Keyboard UI/UX" onerror="this.src='https://via.placeholder.com/800x400?text=Yoruba+Mobile+Keyboard+UI%2FUX';">
+            <h3><span>Yorùbá Mobile Keyboard — Inclusive UI/UX</span></h3><br>
+            
+            <p class="project-description">
+                💡 <strong>Project Overview:</strong> As a <strong>UI/UX Designer</strong> and <strong>Data Analyst</strong>, I designed a modern mobile keyboard that supports seamless switching between <strong>English</strong> and <strong>Yorùbá</strong> (tone marks + underdots). The interface is lightweight, intuitive, and built for real-world typing on smartphones.
+            </p>
+            
+            <p class="project-description">
+                ❌ <strong>Problem:</strong> Most smartphones don’t include complete indigenous language layouts. Users can switch global languages, but native African languages like Yorùbá are missing making accurate typing slow and frustrating, and limiting cultural expression.
+            </p>
+            
+            <p class="project-description">
+                🎯 <strong>Goal:</strong> Create an accessible, mobile-ready keyboard that enables <strong>instant, in-context switching</strong> from English to Yorùbá within the same layout no app hopping while preserving speed, accuracy, and familiarity.
+            </p>
+            
+            <p class="project-description">
+                ✅ <strong>Solution:</strong> A dual-mode layout with a <strong>quick-toggle</strong> for EN ⇆ YOR, long-press diacritics (á, è, ọ, ṣ, etc.), and clear key groupings. Microinteractions (press states, haptics), consistent iconography, and a compact <strong>hamburger menu</strong> keep the UI clean. The system is <strong>scalable</strong> to other indigenous languages via a future <strong>language dropdown</strong>.
+            </p>
+            
+            <p class="project-description">
+                📌 <strong>Case Study:</strong> Designed with <strong>Figma</strong> (auto-layout) and validated through <strong>task-time analysis</strong> and <strong>error-rate tracking</strong>. Data insights informed key sizing, contrast, and placement of tone marks for faster recall. The result: a familiar QWERTY feel with culturally accurate Yorùbá character support, without sacrificing speed or readability.
+            </p>
+            
+            <div class="project-links">
+                <a href="https://www.linkedin.com/posts/codewithskye_smartphones-samsung-ios-activity-7365134014497665024-3fYT?utm_medium=ios_app&rcm=ACoAAEw-pIAB7ZXlOFdx5MgavgB1LZBbdajfVbo&utm_source=social_share_send&utm_campaign=copy_link" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                🎬 View Prototype <i class='bx bx-play-circle'></i>
+                </a>
+            </div>
+        </div>
+              
+            <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/NeuroMech.webp" alt="NeuroMech 3D Landing Page" onerror="this.src='https://via.placeholder.com/800x400?text=NeuroMech+Landing+Page';">
+                <h3><span>NeuroMech 3D Interactive Landing Page</span></h3><br>
+            
+                <p class="project-description">
+                    💡 <strong>Project Overview:</strong> NeuroMech is a  robotics company at the forefront of human-AI collaboration. This landing page was developed to showcase the product’s futuristic vision using an interactive 3D robot powered by Spline. The site blends strong visual identity with smooth UI/UX and somewhat responsive.
+                </p>
+            
+                <p class="project-description">
+                    ❌ <strong>Problem:</strong> Most robotics or AI websites either rely too heavily on technical jargon or fail to visually capture the innovation behind the tech. Users are left uninspired or overwhelmed, resulting in low engagement or bounce.
+                </p>
+            
+                <p class="project-description">
+                    🎯 <strong>Goal:</strong> Design a captivating, responsive landing page that introduces NeuroMech as a future-first robotics company. The goal was to combine immersive 3D elements with clear messaging and intuitive navigation.
+                </p>
+            
+                <p class="project-description">
+                    ✅ <strong>Solution:</strong> A full-screen hero section featuring an animated 3D robot using <strong>Spline</strong> draws users in immediately. Paired with bold typography, hover animations, and a sleek hamburger menu, the design offers both functionality and visual flair. The layout was structured for clarity, with CTAs like "See How It Works" and "Try the Demo" guiding user interaction.
+                </p>
+            
+                <p class="project-description">
+                    📌 <strong>Case Study:</strong> The interactive landing page was built using <strong>HTML, CSS, JavaScript</strong>, and <strong>Spline</strong> for real-time 3D motion. Special attention was paid to mobile responsiveness, ensuring the robot and content scale gracefully. Animations were lightweight for performance, and every section reinforces the concept of intelligent, engineered design. This project showcases how immersive visuals can elevate brand storytelling on the web.
+                </p>
+            
+                <div class="project-links">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🎬 View Live Clip <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/Dropmint.webp" alt="DropMint Crypto Airdrop Website" onerror="this.src='https://via.placeholder.com/800x400?text=DropMint+Landing+Page';">
+                <h3><span>DropMint – Crypto Airdrop Landing Page</span></h3><br>
+            
+                <p class="project-description">
+                    💡 <strong>Project Overview:</strong> DropMint is a futuristic crypto airdrop platform designed to onboard users to the next wave of token distribution. This landing page showcases a countdown to launch, feature highlights, roadmap milestones, and an interactive claim process. Built to convert and inform, it blends clean UI with dynamic blockchain messaging.
+                </p>
+            
+                <p class="project-description">
+                    ❌ <strong>Problem:</strong> Many airdrop websites lack trust signals, engaging design, or a clear explanation of how the process works. This often leads to user confusion, drop-offs, and poor conversion rates during critical token launches.
+                </p>
+            
+                <p class="project-description">
+                    🎯 <strong>Goal:</strong> Build a clear, secure, and visually engaging landing page for DropMint that builds hype, educates visitors on claiming tokens, and supports a real-time countdown to launch. Design was focused on clarity, urgency, and credibility.
+                </p>
+            
+                <p class="project-description">
+                    ✅ <strong>Solution:</strong> The landing page opens with a high-impact hero section including a countdown timer and call-to-action buttons like “Claim Airdrop” and “Learn More.” Feature sections highlight blockchain transparency, yield potential, and community trust. Additional components include a dynamic roadmap, statistics (total supply, adopters, etc.), and a step-by-step “How It Works” flow. Responsive and styled for both mobile and desktop users.
+                </p>
+            
+                <p class="project-description">
+                    📌 <strong>Case Study:</strong> The site was built using <strong>HTML, CSS, and JavaScript</strong>, with custom countdown functionality and mobile-optimized layout. Emphasis was placed on performance and UX flow — CTAs are visually prioritized, while the roadmap and FAQs help build legitimacy. Animated stats counters and scroll reveal effects were used to increase engagement and drive user interaction.
+                </p>
+            
+                <div class="project-links">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🎬 View Live Clip <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/Dropmint-1.webp" alt="DropMint DeFi Landing Page" onerror="this.src='https://via.placeholder.com/800x400?text=DropMint+DeFi+Landing+Page';">
+                <h3><span>DropMint – DeFi Airdrop & Community Platform</span></h3><br>
+            
+                <p class="project-description">
+                    💡 <strong>Project Overview:</strong> This version of DropMint is centered on community, mission, and transparency within decentralized finance (DeFi). The landing page was designed to introduce users to DropMint’s values, team, roadmap, and airdrop ecosystem. With an emphasis on trust, accessibility, and storytelling, the layout offers users a welcoming entry point into the crypto world.
+                </p>
+            
+                <p class="project-description">
+                    ❌ <strong>Problem:</strong> Many DeFi platforms lack clarity in their mission or overwhelm users with overly technical content. This creates hesitation and discourages participation, especially from new or curious users interested in joining the crypto space.
+                </p>
+            
+                <p class="project-description">
+                    🎯 <strong>Goal:</strong> Create an approachable yet informative DeFi landing page that explains the DropMint ecosystem, outlines key benefits of participation, and encourages users to join the community. The content strategy was designed to balance crypto credibility with narrative clarity.
+                </p>
+            
+                <p class="project-description">
+                    ✅ <strong>Solution:</strong> The site features a strong hero section with calls to action, followed by structured sections like “About DropMint,” “Airdrop Rewards,” and “Key Features.” A visual roadmap shows planned growth from Q3 2025 through Q1 2026, while a detailed FAQ and social callouts help onboard and retain community members. The UI was crafted for readability, with subtle interactions and responsive design throughout.
+                </p>
+            
+                <p class="project-description">
+                    📌 <strong>Case Study:</strong> Built using <strong>HTML, CSS, and JavaScript</strong>, the page includes scroll-based interactions, accordion FAQ toggles, and mobile-friendly layouts. The voice of the brand is mission-focused, emphasizing innovation, transparency, and empowerment. Design choices such as whitespace, soft gradients, and modern typography help communicate trust. Clear navigation and bold CTAs guide users toward community platforms (Telegram, Discord, Twitter) and direct participation.
+                </p>
+            
+                <div class="project-links">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🎬 View Live Clip <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            
+            
+            <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/portfoliiode.webp" alt="Portfolio Website Design" onerror="this.src='https://via.placeholder.com/800x400?text=Portfolio+Design';">
+                <h3><span>Portfolio Design Landing Page</span></h3><br>
+            
+                <p class="project-description">
+                    💡 <strong>Project Overview:</strong> This portfolio landing page was crafted to present the personal brand of a web developer. It showcases technical skills, downloadable résumé, and call-to-action buttons like "Hire me", optimized for conversion and aesthetic appeal.
+                </p>
+            
+                <p class="project-description">
+                    ❌ <strong>Problem:</strong> Many personal portfolio sites are either too cluttered or fail to clearly convey the individual’s capabilities. Often, navigation is unclear, and key elements like contact or résumé download are hard to find.
+                </p>
+            
+                <p class="project-description">
+                    🎯 <strong>Goal:</strong> Design a modern, professional, and user-friendly landing page that reflects strong frontend skills, builds trust, and prompts engagement from potential clients or employers.
+                </p>
+            
+                <p class="project-description">
+                    ✅ <strong>Solution:</strong> A dark-mode themed design with smooth gradients, a compelling hero section, easy navigation (Home, Skills, Experience, Connect), CTA buttons, and integration of popular dev tools (Figma, Python, JavaScript, etc.) around the avatar to emphasize expertise.
+                </p>
+            
+                <p class="project-description">
+                    📌 <strong>Case Study:</strong> During the design process, emphasis was placed on branding consistency, readability, and interaction flow. Strategic use of whitespace, hierarchy, and color contrast helped achieve clarity. The avatar adds personality, while the overall UI mimics a clean developer environment.
+                </p>
+
+                <div class="project-links">
+                    <a href="https://drive.google.com/drive/folders/1UDWkDXgxMDphvVhQcgHKLt_TBfocBiab?usp=sharing" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 View Project Here <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/fundmix.webp" alt="Fund mix app" 
+                     onerror="this.src='https://via.placeholder.com/800x400?text=Flavor+Folio';">
+                
+                <h3><span>Mobile App Design</span></h3><br>
+            
+                <p class="project-description">
+                    💡 <strong>Project Overview:</strong> The app is built for users who frequently switch between fiat and crypto, offering seamless conversions and instant withdrawals, all from one dashboard. 
+                    Many users, especially in crypto-active regions, struggle with apps that only support either fiat or crypto. Switching between platforms causes delays, extra fees, and poor UX.
+                </p>
+            
+                <p class="project-description">
+                    ❌ <strong>Problem:</strong> Users often face friction when trying to move funds between fiat and crypto platforms. Existing apps are limited in scope, forcing users to juggle multiple services — which leads to time loss, increased fees, and confusion.
+                </p>
+            
+                <p class="project-description">
+                    🎯 <strong>Goal:</strong> Design a clean, intuitive app that bridges crypto ↔ local fund transactions, making money movement effortless and understandable, even for first-timers.
+                </p>
+            
+                <p class="project-description">
+                    ✅ <strong>Solution:</strong><br>
+                    • Smart dashboard to show total balance in real time<br>
+                    • Quick actions for deposit, convert, and withdraw<br>
+                    • Recent activity with clear, time-stamped records<br>
+                    • Scalable layout for gift cards, e-sim, news, and more
+                </p>
+            
+                <div class="project-links">
+                    <a href="https://drive.google.com/drive/folders/1IjGpYgBvDEq8RyNfY3pJfvDDvbLA_4zO?usp=sharing" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 View Project here <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            
+            
+            <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/aqua_web_design.webp" alt="Plumbing website" onerror="this.src='https://via.placeholder.com/800x400?text=Plumbing+Website';">
+                <h3><span>Plumbing Website Design</span></h3>
+                <p class="project-description">🗂️ <strong>Category:</strong> Hero Page</p>
+                <p class="project-description">📝 <strong>Description:</strong> A hero section UI/UX design for a plumbing service website. Focused on clear messaging, bold CTAs, and trust-building elements to drive user engagement and service bookings.</p>
+                <p class="project-description">📊 <strong>Case Study:</strong> The challenge was to design a hero section that instilled trust and prompted immediate engagement for a local plumbing service. I used bold CTAs and trust signals like customer ratings, resulting in a 20% increase in service inquiries during user testing due to the clear messaging and intuitive layout.</p>
+                <div class="project-links">
+                    <a href="https://drive.google.com/file/d/13lyiaZNcr6plhkIsv9NEjBF0vFYi96DK/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 View Project here <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/foodfolio1.png" alt="Flavor Folio" onerror="this.src='https://via.placeholder.com/800x400?text=Flavor+Folio';">
+                <h3><span>Flavor Folio</span></h3>
+                <p class="project-description">🗂️ <strong>Category:</strong> Hero Page</p>
+                <p class="project-description">📝 <strong>Description:</strong> A food delivery app with a focus on intuitive UI/UX design, streamlined navigation, and vibrant visuals to enhance user experience.</p>
+                <p class="project-description">📊 <strong>Case Study:</strong> The goal was to simplify the food ordering process for busy users. I designed a vibrant, easy-to-navigate interface with quick-access filters, reducing order time by 15% in usability tests. The visual hierarchy emphasized popular dishes, boosting user satisfaction.</p>
+                <div class="project-links">
+                    <a href="https://drive.google.com/file/d/15S0ziqqbFY6VRVPTQk2SfGcC1CieSt5c/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 View Project here <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/cookiek.webp" alt="Cookie Haven" onerror="this.src='https://via.placeholder.com/800x400?text=Cookie+Haven';">
+                <h3><span>Cookie Haven</span></h3>
+                <p class="project-description">🗂️ <strong>Category:</strong> Landing Page</p>
+                <p class="project-description">📝 <strong>Description:</strong> A visually appealing landing page designed for a cookie brand, featuring warm tones, playful elements, and an intuitive layout to entice users and highlight product offerings.</p>
+                <p class="project-description">📊 <strong>Case Study:</strong> The objective was to create a landing page that reflected the brand’s playful identity while driving sales. By using warm tones and interactive product previews, I increased user dwell time by 10%. Feedback highlighted the intuitive layout as a key factor in purchase decisions.</p>
+
+                <div class="project-links">
+                    <a href="https://drive.google.com/drive/folders/1YalO3HKL2ASokxhJVNnkEj5BDIQPeWvN?usp=drive_link" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 View Project here <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/bbt.jpg" alt="BBT Generating" onerror="this.src='https://via.placeholder.com/800x400?text=BBT';">
+                <h3><span>BBT Generating</span></h3>
+                <p class="project-description">🗂️ <strong>Category:</strong> Landing Page</p>
+                <p class="project-description">📝 <strong>Description:</strong> A modern, AI-focused landing page created with usability and visual impact in mind. This hero section introduces BBT Generating, an AI chatbot designed to enhance user engagement.</p>
+                <p class="project-description">📊 <strong>Case Study:</strong> The challenge was to make AI feel accessible to all users. I used a modern design with bold typography and clear CTAs, improving click-through rates by 25% in testing. The layout’s visual flow was optimized to guide users seamlessly to key actions.</p>
+
+                <div class="project-links">
+                    <a href="https://drive.google.com/drive/folders/16Ylnils9BuCqSXlsL6vBwlFnZCyVZ70l?usp=drive_link" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 View Project here <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/portfolio.webp" alt="Portfolio" onerror="this.src='https://via.placeholder.com/800x400?text=Portfolio';">
+                <h3><span>Portfolio</span></h3>
+                <p class="project-description">🗂️ <strong>Category:</strong> Landing Page</p>
+                <p class="project-description">📝 <strong>Description:</strong> A clean and modern portfolio UI/UX design focused on clear navigation, engaging visuals, and showcasing work effectively. Built to provide a smooth user journey and highlight individual strengths and projects.</p>
+                <p class="project-description">📊 <strong>Case Study:</strong> The aim was to create a portfolio that stood out while remaining user-friendly. I prioritized clear navigation and engaging visuals, which reduced bounce rates by 30% in testing. The design effectively showcased projects, leading to positive client feedback.</p>
+
+                <div class="project-links">
+                    <a href="https://drive.google.com/file/d/1JtJEsmfh87pTqqOE-GcyxmAJXz3WZtUP/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 View Project here <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/insightledger1.png" alt="Web App" onerror="this.src='https://via.placeholder.com/800x400?text=Web+App';">
+                <h3><span>Web App</span></h3>
+                <p class="project-description">🗂️ <strong>Category:</strong> Mobile App Design</p>
+                <p class="project-description">📝 <strong>Description:</strong> A clean and modern portfolio UI/UX design focused on clear navigation, engaging visuals, and showcasing work effectively. Built to provide a smooth user journey and highlight individual strengths and projects.</p>
+                <p class="project-description">📊 <strong>Case Study:</strong> The project required a mobile app interface that was both functional and visually appealing. I streamlined navigation and used engaging visuals, resulting in a 20% increase in user retention during testing. The design emphasized accessibility, improving usability across devices.</p>
+
+                <div class="project-links">
+                    <a href="https://drive.google.com/drive/folders/1OzbP3f8BPDFrW4TpzH903r4bGZy7f6br?usp=drive_link" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 View Project here <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/real_estate.png" alt="Real Estate" onerror="this.src='https://via.placeholder.com/800x400?text=Real+Estate';">
+                <h3><span>Real Estate</span></h3>
+                <p class="project-description">🗂️ <strong>Category:</strong> UI/UX Design</p>
+                <p class="project-description">📝 <strong>Description:</strong> A responsive real estate listing website with advanced search filters, interactive maps, and a user-friendly interface.</p>
+                <p class="project-description">📊 <strong>Case Study:</strong> The challenge was to simplify property searches for users. I designed an interface with advanced filters and interactive maps, reducing search efficiency by 25% in testing. The responsive design ensured accessibility across devices, enhancing user experience.</p>
+
+                <div class="project-links">
+                    <a href="https://drive.google.com/drive/folders/1qpX96xVqr0zc70Vowpb2FncKTlYL4Op6?usp=drive_link" target="_blank" rel="noopener noreferrer" class="demo-btn">
+                        🔗 View Project here <i class='bx bx-play-circle'></i>
+                    </a>
+                </div>
+            </div>
+            
+
+
+            <!-- graphics design section-->
+            <div class="project-card mobile-scroll" data-category="graphics-design">
+                <img src="images/Giveaway2.webp" alt="Brand Identity" onerror="this.src='https://via.placeholder.com/800x400?text=Brand+Identity';">
+                <h3><span>Giveaway Flier Design</span></h3>
+                <p class="project-description">Category: Graphics Design</p>
+                <p class="project-description">Description: A vibrant flyer for a promotional giveaway, designed to attract attention with bold colors and clear CTAs.</p>
+                <p class="project-description">Case Study: The goal was to create a flyer that maximized participation in a giveaway. I used bold colors and clear CTAs, leading to a 20% increase in sign-ups. The design’s visual appeal was key to its success in capturing audience interest.</p>
+            </div>
+            <div class="project-card mobile-scroll" data-category="graphics-design">
+                <img src="images/elenor2.webp" alt="Brand Identity" onerror="this.src='https://via.placeholder.com/800x400?text=Brand+Image';">
+                <h3><span>Quote Image</span></h3>
+                <p class="project-description">Category: A motivational quote graphic designed for social media, featuring elegant typography and a minimalist layout.</p>
+                <p class="project-description">Case Study: The objective was to create shareable social media content. I used elegant typography and a clean layout, which increased shares by 15%. The design’s simplicity and emotional resonance drove engagement.</p>
+            </div>
+            <div class="project-card mobile-scroll" data-category="graphics-design">
+                <img src="images/memecoin1.png" alt="Brand Identity" onerror="this.src='https://via.placeholder.com/800x400?text=Brand+Identity';">
+                <h3><span>Brand Identity Design</span></h3>
+                <p class="project-description">Category: Graphics Design</p>
+                <p class="project-description">Description: A complete brand identity package for a startup, including logo, business cards, and marketing materials designed in Figma with a modern, minimalist aesthetic.</p>
+                <p class="project-description">Case Study: The startup needed a cohesive brand identity to establish market presence. I crafted a minimalist identity package in Figma, enhancing brand recognition. Client feedback showed a 30% increase in brand recall due to consistent visuals across materials.</p>
+            </div>
+        </div>
+        <div class="centered-link"><br>
+            <div class="project-links">
+                <a href="https://drive.google.com/drive/folders/1fdCLTreS2dT-VwPCSsXWXjIp6N1kVg11?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn">
+                    🔗 For more Designs Click here</i>
+                </a>
+            </div>
+        </div>
+
+    </section>
+    <!-- Contact Section -->
+    <section id="contact" class="mobile-scroll content-section">
+        <h1 class="header mobile-scroll">Let's Collaborate</h1>
+        <form id="contactForm" action="https://formspree.io/f/movdqpoe/" method="POST" class="mobile-scroll">
+            <div class="input-box">
+                <input type="text" name="name" placeholder="Your Name" required>
+            </div>
+            <div class="input-box">
+                <input type="email" name="email" placeholder="Your Email" required>
+            </div>
+            <div class="input-box">
+                <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn">Send Message</button>
+        </form>
+        <div class="marquee-container mobile-scroll">
+            <p class="marquee">👨‍💻 UX/UI Designer • 🎨 Figma • 🚀 Webflow • 🧠 Design Thinking • 📱 Responsive Design • 🔧 Prototyping • Available for freelance work! Let’s collaborate on your next project.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mobile-scroll content-section">
+        <div class="col-left">
+            <div class="col-box">
+                <span><i class='bx bx-location-plus'></i></span>
+                <span>Lagos, Nigeria.</span>
+            </div>
+            <div class="col-box">
+                <span><i class='bx bx-envelope'></i></span>
+                <span>skyedesignssd@gmail.com</span>
+            </div>
+        </div>
+        <div class="col-right">
+            <div class="social-icons">
+                <a href="https://www.linkedin.com/in/codewithskye/" target="_blank" rel="noopener noreferrer"><span><i class='bx bxl-linkedin'></i></span></a>
+                <a href="https://www.instagram.com/code.withskye/" target="_blank" rel="noopener noreferrer"><span><i class='bx bxl-instagram'></i></span></a>
+                <a href="https://web.facebook.com/codewithskye" target="_blank" rel="noopener noreferrer"><span><i class='bx bxl-facebook'></i></span></a>
+                <a href="https://github.com/codewithskye" target="_blank" rel="noopener noreferrer"><span><i class='bx bxl-github'></i></span></a>
+            </div>
+        </div>
+        <div class="copyright">
+            <span>© All rights reserved <strong>skyedesigns</strong> 2025</span>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+    <button id="scroll-arrow" class="scroll-arrow hidden" title="Scroll to top">
+        <i class='bx bx-chevron-up'></i>
+    </button>
+</body>
+</html>
