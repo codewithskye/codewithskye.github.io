@@ -4427,7 +4427,7 @@ body.dark-mode #converter-result .loading {
 .scroll-arrow {
     position: fixed;
     bottom: 20px;
-    right: 20px;
+    left: 20px;
     background-color: #001b60;
     color: white;
     border: none;
