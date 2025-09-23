@@ -88,6 +88,7 @@
                 <p id="greeting-time-date"></p>
             </div>
         </div>
+        
     <!-- Navigation -->
     <nav class="mobile-scroll">
         <a href="index.html" class="logo"><h2>Skye</h2></a>
@@ -124,7 +125,13 @@
             <p>I design clean, user-friendly interfaces and build responsive websites.</p>
             <div class="btn-box">
                 <a href="contact.html" class="btn">Hire Me</a>
-                <a href="DanielOwolabi_U:D.pdf" class="btn" download>Download Resume</a>
+                <select class="btn" id="resumeSelect" onchange="downloadResume(this.value)">
+                    <option value=""> View Resume </option>
+                    <option value="Daniel_Owolabi_ui.pdf">UIUX / Web Dev Resume</option>
+                    <option value="Daniel_Owolabi_da.pdf">Data Analyst Resume</option>
+                    <option value="Daniel_Owolabi_mod.pdf">Moderator Resume</option>
+                </select>               
+                <!-- <a href="DanielOwolabi_U:D.pdf" class="btn" download>Download Resume</a> -->
             </div>
         </div>
         <div class="marquee-container">
@@ -206,21 +213,23 @@
                   <img src="images/keyboard (1).png" alt="Yorùbá Keyboard Project"
                        onerror="this.src='https://via.placeholder.com/300x200?text=Yoruba+Keyboard';">
                 </div>
-              </a>              
+              </a>
+              
+              <a href="https://drive.google.com/drive/folders/1RthYCOzWBUR20nTYZzGIvTt_pVbVe87E?usp=sharing" class="blog-link" target="_blank" rel="noopener noreferrer">
+                <div class="box mobile-scroll">
+                  <h1><span>Food Product Tracker 👉 Excel Inventory Tool</span></h1>
+                  <p>An automated Excel tracker for Sammy Foods to monitor stock levels, highlight upcoming expiries, and reduce waste — no complex software needed.</p>
+                  <img src="images/sammy_foods.webp" alt="Food Product Tracker Project"
+                       onerror="this.src='https://via.placeholder.com/300x200?text=Food+Product+Tracker';">
+                </div>
+              </a>
+
               <a href="https://dropmint-airdrop.vercel.app" class="blog-link" target="_blank" rel="noopener noreferrer">
                 <div class="box mobile-scroll">
                   <h1><span>DropMint 👉 Crypto Airdrop Countdown UI</span></h1>
                   <p>A bold, timer-driven landing page for a 2025 airdrop event, designed with animated counters, smart wallet verification flow, and modern Web3 onboarding UI.</p>
                   <img src="images/Dropmint (1).webp" alt="DropMint Airdrop Countdown"
                        onerror="this.src='https://via.placeholder.com/300x200?text=DropMint+Airdrop';">
-                </div>
-              </a>
-            <a href="https://codewithskye.github.io/Dropmint_/" class="blog-link" target="_blank" rel="noopener noreferrer">
-                <div class="box mobile-scroll">
-                  <h1><span>DropMint 👉 Crypto Airdrop Platform</span></h1>
-                  <p>A secure, community-driven DeFi landing page built to promote airdrops, showcase key features, and engage users in the blockchain space.</p>
-                  <img src="images/Dropmint-1.webp" alt="DropMint Project"
-                       onerror="this.src='https://via.placeholder.com/300x200?text=DropMint';">
                 </div>
               </a>
         </div>
@@ -251,13 +260,14 @@
                 </div>
             </div>
             <div class="testimonial-card mobile-scroll">
-                <p>Daniel’s creativity and technical expertise brought our vision to life. Highly recommend!</p>
+                <p>Daniel’s Food Product Tracker completely changed how we manage our stock.  
+                    It’s simple, fast, and saves us money every month. Highly recommend!</p>
                 <div class="testimonial-author">
                     <div class="author-info">
-                        <h3><span>Michael</span></h3>
-                        <p>Founder, Cookies</p>
+                        <h3><span>Mr Awesome</span></h3>
+                        <p>Founder, Sammy Foods</p>
                     </div>
-                    <img src="images/cookie_logo.png" alt="Company Logo" class="company-logo" onerror="this.src='https://via.placeholder.com/60x60?text=Logo';">
+                    <img src="images/SF.png" alt="Company Logo" class="company-logo" onerror="this.src='https://via.placeholder.com/60x60?text=Logo';">
                 </div>
             </div>
             <div class="testimonial-card mobile-scroll">
@@ -267,7 +277,7 @@
                         <h3><span>Sarah</span></h3>
                         <p>COO, DataDriven</p>
                     </div>
-                    <img src="images/foodfolio_logo.png" alt="Company Logo" class="company-logo" onerror="this.src='https://via.placeholder.com/60x60?text=Logo';">
+                    <img src="images/SF_logo1.png" alt="Company Logo" class="company-logo" onerror="this.src='https://via.placeholder.com/60x60?text=Logo';">
                 </div>
             </div>
         </div>
@@ -471,7 +481,7 @@
                     <div class="loader hidden"></div>
                     <div class="success-message hidden">
                         <i class='bx bx-check-circle'></i>
-                        <span>🎉🎉 Yayy! We’ve just sent a special greeting to your email!</span>
+                        <span>🎉🎉Yayy! We’ve just sent a special greeting to your email!</span>
                     </div>
                     <div class="error-message hidden"></div>
                 </div>
@@ -484,6 +494,13 @@
         <span>© All rights reserved <strong>skyedesigns</strong> 2025</span>
     </div>
     </footer>
+    <script>
+        function downloadResume(file) {
+          if(file) {
+            window.location.href = file;
+          }
+        }
+    </script>
     <script src="script.js"></script>
     <button id="scroll-arrow" class="scroll-arrow hidden" title="Scroll to top">
         <i class='bx bx-chevron-up'></i>
