@@ -2013,6 +2013,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// Chat bot
+
 class AIChatbot {
     constructor(page = "default") {
         this.page = page;
@@ -2096,7 +2098,6 @@ class AIChatbot {
     showWelcomeMessage() {
         this.setSuggestions();
 
-        // Prevent duplicate greeting
         if (!this.messagesContainer.querySelector('.welcome-message')) {
             const msg = document.createElement('div');
             msg.className = 'ai-message bot welcome-message';
@@ -2223,9 +2224,10 @@ class AIChatbot {
 
                 if (s.target && document.querySelector(s.target)) {
                     document.querySelector(s.target).scrollIntoView({ behavior: "smooth" });
-                    history.replaceState(null, null, s.target);
+                    history.pushState(null, "", s.target);
                     this.resetNextOpen = true;
                     this.closeChat();
+                    this.handlePageChange(); 
                 } else {
                     this.input.value = s.text;
                     this.sendMessage();
@@ -2261,18 +2263,34 @@ class AIChatbot {
         if (msg.includes("contact")) return "You can reach Daniel through the contact section or WhatsApp directly!";
         return "I'm here to help! Tap any button below to explore.";
     }
+
+    // 🔥 Auto-update page suggestions when navigation changes
+    handlePageChange() {
+        const path = window.location.pathname;
+        if (path.includes("technexus")) this.page = "technexus";
+        else if (path.includes("index") || document.body.classList.contains('index-page')) this.page = "index";
+        else if (path.includes("projects")) this.page = "projects";
+        else this.page = "default";
+
+        this.messagesContainer.innerHTML = ""; 
+        this.showWelcomeMessage();
+    }
 }
-const bodyClass = document.body.classList.contains('index-page') ? 'index' : 'default';
-const chatbot = new AIChatbot(bodyClass);
 
+// ✅ Initialize once DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
-    const path = window.location.pathname;
-    let page = "default";
-    if (path.includes("technexus")) page = "technexus";
-    else if (path.includes("index")) page = "index";
-    else if (path.includes("projects")) page = "projects";
+    const bot = new AIChatbot("default");
 
-    new AIChatbot(page);
+    window.addEventListener("popstate", () => bot.handlePageChange());
+
+    // Also listen for normal <a> clicks inside the site
+    document.body.addEventListener("click", e => {
+        if (e.target.tagName === "A" && e.target.getAttribute("href").startsWith("#")) {
+            setTimeout(() => bot.handlePageChange(), 300);
+        }
+    });
+
+    bot.handlePageChange();
 });
 
 
