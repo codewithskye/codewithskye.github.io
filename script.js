@@ -2353,6 +2353,97 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Desktop Prompt Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const promptBtn = document.getElementById('desktop-prompt-btn');
+    const modal = document.getElementById('desktop-modal');
+    const overlay = document.getElementById('desktop-overlay');
+    const copyBtn = document.getElementById('copy-link-btn');
+    const laterBtn = document.getElementById('maybe-later-btn');
+
+    let isModalOpen = false;
+
+    // This shows button at 80% scroll
+    let lastScrollY = window.scrollY;
+    function checkScroll() {
+        if (window.innerWidth > 968) return;
+        const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+        if (scrollPercent >= 80) {
+            promptBtn.classList.remove('hidden');
+        } else {
+            promptBtn.classList.add('hidden');
+        }
+    }
+
+    window.addEventListener('scroll', checkScroll);
+    window.addEventListener('resize', checkScroll);
+
+    
+    checkScroll();
+
+   
+    promptBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        modal.classList.remove('hidden');
+        isModalOpen = true;
+        document.body.style.overflow = 'hidden';
+    });
+
+    
+    overlay.addEventListener('click', closeModal);
+
+    // Copy link
+    copyBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        try {
+            await navigator.clipboard.writeText('codewithskye.github.io');
+            showToast('Link copied!', 'success');
+        } catch (err) {
+            showToast('Failed to copy link', 'error');
+        }
+        closeModal();
+    });
+
+    // later
+    laterBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        closeModal();
+    });
+
+    function closeModal() {
+        if (isModalOpen) {
+            modal.classList.add('hidden');
+            isModalOpen = false;
+            document.body.style.overflow = '';
+        }
+    }
+
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && isModalOpen) {
+            closeModal();
+        }
+    });
+});
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    if (toast && toastMessage) {
+        toastMessage.textContent = message;
+        toast.classList.remove('hidden');
+        toast.classList.remove('error');
+        toast.classList.add('show');
+        if (type === 'error') {
+            toast.classList.add('error');
+        }
+        setTimeout(() => {
+            toast.classList.remove('show');
+            toast.classList.add('hidden');
+        }, 3000);
+    }
+}
+
 document.addEventListener("contextmenu", e => e.preventDefault());
 document.addEventListener("keydown", e => {
     if (e.ctrlKey && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S")) {
