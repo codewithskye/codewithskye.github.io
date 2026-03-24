@@ -4953,6 +4953,7 @@ body.dark-mode .desktop-btn.outline {
 
     #home {
         gap: 2em;
+        padding-top: 3em;
     }
 
     .info-box {
