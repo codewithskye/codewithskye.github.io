@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Explore the creative projects of Daniel Owolabi, including UI/UX design, web development, graphics design, and video editing.">
+        <meta name="author" content="Daniel Owolabi">
+        <title>Projects - Daniel Owolabi</title>
+      
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+        <link rel="stylesheet" href="style.css">
+        <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+      
+        <link rel="icon" type="image/x-icon" href="skye_designs/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="skye_designs/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="skye_designs/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="skye_designs/favicon-16x16.png">
+        <link rel="manifest" href="skye_designs/site.webmanifest">
+
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Projects - Daniel Owolabi",
+          "description": "Explore the creative projects of Daniel Owolabi, including UI/UX design, web development, graphics design, and video editing.",
+          "url": "https://codewithskye.github.io/projects.html",
+          "author": {
+            "@type": "Person",
+            "name": "Daniel Owolabi",
+            "url": "https://codewithskye.github.io/"
+          },
+          "hasPart": [
+            {
+              "@type": "CreativeWork",
+              "name": "UI/UX Design Projects"
+            },
+            {
+              "@type": "CreativeWork",
+              "name": "Web Development Projects"
+            },
+            {
+              "@type": "CreativeWork",
+              "name": "Graphics Design Projects"
+            },
+            {
+              "@type": "CreativeWork",
+              "name": "Video Editing Projects"
+            }
+          ]
+        }
+    </script>
+    <style>
+        .project-links {
+            margin-top: 1.5em;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+    
+        .project-links .demo-btn {
+            padding: clamp(0.8em, 2vw, 1em) clamp(1.5em, 3vw, 2em);
+            border-radius: 15px;
+            border: none;
+            font-size: clamp(0.9em, 3vw, 1em);
+            font-weight: 500;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, var(--primary-color), #001b60);
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            outline: none;
+            touch-action: manipulation;
+            box-shadow: 0 4px 15px rgba(0, 27, 96, 0.2);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+    
+        .project-links .demo-btn:hover {
+            background: linear-gradient(135deg, #0056b3, var(--primary-color));
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 27, 96, 0.4), 0 0 0 3px rgba(0, 27, 96, 0.1);
+            transform: translateY(-3px) scale(1.05);
+            animation: magneticHover 0.6s ease-out, elasticScale 0.8s ease-out;
+        }
+    
+        @keyframes waterFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    
+        .project-links .visit-link {
+            color: #001b60;
+            font-weight: 600;
+            font-size: 1em;
+            text-decoration: underline;
+            position: relative;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+    
+        .project-links .visit-link:hover {
+            text-decoration: none;
+        }
+    
+        .project-links .visit-link::after {
+            content: '↗';
+            opacity: 0;
+            transform: translateX(-5px);
+            transition: all 0.3s ease;
+            margin-left: 6px;
+        }
+    
+        .project-links .visit-link:hover::after {
+            opacity: 1;
+            transform: translateX(2px);
+        }
+    
+        /* Responsive adjustments */
+        @media screen and (max-width: 600px) {
+            .project-links {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+    
+            .project-links .demo-btn,
+            .project-links .visit-link {
+                width: 100%;
+            }
+    
+            .project-links .visit-link {
+                margin-top: 0.5rem;
+                font-size: 1rem;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="mobile-scroll">
+    <a href="index.html" class="logo"><h2>Skye</h2></a>
+    <div class="menu-toggle-container">
+        <div class="mode-toggle" title="Toggle Dark Mode">
+            <i class='bx bx-moon' id="dark-mode-toggle"></i>
+        </div>
+        <div class="menu-toggle">
+            <i class='bx bx-menu-alt-right' id="menu-open"></i>
+            <i class='bx bx-x' id="menu-close" style="display: none;"></i>
+        </div>
+    </div>
+    <ul class="links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="technexus.html">Tech Nexus <span class="new-badge">New</span></a></li>
+        <li><a href="contact.html" class="btn nav-btn">Contact Me <i class='bx bxs-chevron-right'></i></a></li>
+    </ul>
+    <div class="nav-right">
+        <a href="contact.html" class="btn nav-btn">Contact Me <i class='bx bxs-chevron-right'></i></a>
+        <div class="mode-toggle" title="Toggle Dark Mode">
+            <i class='bx bx-moon' id="dark-mode-toggle"></i>
+        </div>
+    </div>
+</nav>
+
+<!-- Projects Section -->
+<section id="projects" class="content-section projects-page">
+    <div class="projects-header">
+        <h1 class="header mobile-scroll">Projects</h1>
+    </div>
+    <div class="filter-container">
+        <button class="filter-btn" data-filter="ui/ux-design">UI/UX Designs</button>
+        <button class="filter-btn" data-filter="website-design">Website Design</button>
+    </div>
+    <div class="projects-container">
+
+       
+    <!-- ui ux design section -->
+
+    <div class="project-card mobile-scroll" data-category="ui/ux-design">
+        <img src="images/NeuroMech-webd.webp" alt="NeuroMech 3D Landing Page">
+
+        <h3>NeuroMech 3D Interactive Landing Page</h3><br>
+
+        <p class="project-description"><strong>Overview:</strong> A futuristic robotics landing page designed to showcase human–AI collaboration through immersive 3D interaction and clean UI.</p>
+
+        <p class="project-description"><strong>Problem:</strong> Most AI websites are either too technical or visually uninspiring, leading to low engagement.</p>
+
+        <p class="project-description"><strong>Goal:</strong> Create an engaging experience that simplifies complex ideas while capturing attention instantly.</p>
+
+        <p class="project-description"><strong>Solution:</strong> Built a visually immersive interface using a real-time 3D robot, bold typography, and clear call-to-actions to guide users.</p>
+
+        <p class="project-description"><strong>Key Highlights:</strong><br>
+        • Interactive 3D hero (Spline)<br>
+        • Clean visual hierarchy<br>
+        • Lightweight animations for performance<br>
+        • Clear user flow and navigation
+        </p>
+
+        <div class="project-links">
+            <a href="https://codewithskye.github.io/NeuroMech/" target="_blank" class="demo-btn">
+                Visit Site
+            </a>
+        </div>
+    </div>
+            
+
+    <div class="project-card mobile-scroll" data-category="ui/ux-design">
+        <img src="images/Dropmint-webd.webp" alt="DropMint DeFi Platform">
+
+        <h3>DropMint – DeFi Airdrop Platform</h3><br>
+
+        <p class="project-description"><strong>Overview:</strong> A decentralized platform designed to simplify crypto airdrops and community onboarding.</p>
+
+        <p class="project-description"><strong>Problem:</strong> Many DeFi platforms overwhelm users with complexity and lack trust signals.</p>
+
+        <p class="project-description"><strong>Goal:</strong> Design a clean, trustworthy interface that makes crypto participation simple.</p>
+
+        <p class="project-description"><strong>Solution:</strong> Structured layout with clear messaging, roadmap visualization, and onboarding-focused sections.</p>
+
+        <p><strong>Key Highlights:</strong><br>
+        • Simplified crypto messaging<br>
+        • Visual roadmap<br>
+        • FAQ for user clarity<br>
+        • Strong conversion-focused CTAs
+        </p>
+
+        <div class="project-links">
+            <a href="https://codewithskye.github.io/Dropmint_/" target="_blank" class="demo-btn">
+                Visit Site
+            </a>
+        </div>
+    </div>
+            
+
+    <div class="project-card mobile-scroll" data-category="ui/ux-design">
+            <img src="images/NestVibe (1).png" alt="NestVibe Realty">
+
+            <h3>NestVibe Realty Website</h3>
+
+            <p class="project-description"><strong>Overview:</strong> A modern real estate platform built to simplify property search and improve user trust.</p>
+
+            <p class="project-description"><strong>Problem:</strong> Property websites are often cluttered and hard to navigate.</p>
+
+            <p class="project-description"><strong>Goal:</strong> Create a clean, intuitive browsing experience.</p>
+
+            <p class="project-description"><strong>Solution:</strong> Designed a structured layout with filters, featured listings, and trust-building sections.</p>
+
+            <p><strong>Key Highlights:</strong><br>
+            • Smart filtering system<br>
+            • Clean layout & hierarchy<br>
+            • Testimonials & trust elements<br>
+            • Fully responsive design
+            </p>
+
+            <div class="project-links">
+                <a href="https://codewithskye.github.io/nestvibe/" target="_blank" class="demo-btn">
+                    Visit Site
+                </a>
+            </div>
+    </div>
+            
+        <div class="project-card mobile-scroll" data-category="ui/ux-design">
+            <img src="images/Shopdart.png" alt="ShopDart E-commerce">
+
+            <h3>ShopDart – Multi Vendor E-commerce</h3>
+
+            <p class="project-description"><strong>Overview:</strong> A live e-commerce platform delivering a smooth and efficient multi-vendor shopping experience.</p>
+
+            <p class="project-description"><strong>Problem:</strong> Many e-commerce platforms suffer from poor navigation and checkout friction.</p>
+
+            <p class="project-description"><strong>Goal:</strong> Improve user flow and increase conversion.</p>
+
+            <p class="project-description"><strong>Solution:</strong> Designed a clean interface with intuitive navigation and real-time cart updates.</p>
+
+            <p><strong>Key Highlights:</strong><br>
+            • Clear product hierarchy<br>
+            • Real-time cart feedback<br>
+            • Smooth navigation flow<br>
+            • Conversion-focused design
+            </p>
+
+            <div class="project-links">
+                <a href="https://shopdart.42web.io" target="_blank" class="demo-btn">
+                    Visit Site
+                </a>
+            </div>
+        </div>
+        
+        <div class="project-card mobile-scroll" data-category="ui/ux-design">
+                <img src="images/keyboard (1).png" alt="Yoruba Keyboard UI">
+
+                <h3>Yorùbá Mobile Keyboard – Inclusive UX</h3>
+
+                <p><strong>Overview:</strong> A mobile keyboard designed to support seamless typing in both English and Yorùbá.</p>
+
+                <p><strong>Problem:</strong> Indigenous languages are poorly supported on most smartphones.</p>
+
+                <p><strong>Goal:</strong> Enable fast, natural typing without switching apps.</p>
+
+                <p><strong>Solution:</strong> Designed a dual-language keyboard with quick toggles and long-press diacritics.</p>
+
+                <p><strong>Key Highlights:</strong><br>
+                • EN ⇆ YOR quick switch<br>
+                • Tone mark support<br>
+                • Familiar QWERTY layout<br>
+                • Scalable for other languages
+                </p>
+
+                <div class="project-links">
+                    <a href="https://www.linkedin.com/posts/codewithskye_smartphones-samsung-ios-activity-7365134014497665024-3fYT" target="_blank" class="demo-btn">
+                        View Prototype
+                    </a>
+                </div>
+        </div>
+
+<!-- website design section -->
+<div class="project-card mobile-scroll" data-category="website-design">
+    <img src="images/agroinvest.webp" alt="AgroInvestment Platform">
+
+    <h3><span>AgroInvestment — Agricultural Investment Platform</span></h3><br>
+
+    <p class="project-description">
+        <strong>Project Overview:</strong> AgroInvestment is an agriculture-based investment platform that presents users with opportunities to invest in farming, crop production, and agribusiness ventures. The platform is positioned as a way for individuals to earn returns by funding agricultural projects.
+    </p>
+
+    <p class="project-description">
+        <strong>Problem:</strong> Many agricultural investment platforms online struggle with <strong>trust, clarity, and transparency</strong>. Users are often presented with high-return promises but little explanation of how the system works. 
+        Research shows that some platforms in this space raise red flags such as low credibility, unclear ownership, and poor user experience, which can make users hesitant to invest.
+    </p>
+
+    <p class="project-description">
+        <strong>Goal:</strong> Redesign and structure a landing experience that:
+        <br>• Clearly explains how agricultural investment works
+        <br>• Builds user trust through transparency and structure
+        <br>• Simplifies complex financial concepts for everyday users
+        <br>• Encourages safe and informed participation
+    </p>
+
+    <p class="project-description">
+        <strong>Solution:</strong> Designed a clean, conversion-focused landing page with:
+        <br>• A strong hero section explaining “what the platform does” in simple terms
+        <br>• Structured investment plans with clear breakdowns (duration, returns, risk level)
+        <br>• Trust-building sections like FAQs, testimonials, and transparency blocks
+        <br>• Step-by-step “How It Works” flow to guide new users
+        <br>• Clear CTAs such as “Start Investing” and “Learn More”
+    </p>
+
+    <p class="project-description">
+        <strong>Case Study:</strong> The design focuses heavily on <strong>user trust and clarity</strong>, which are critical in financial and investment platforms. 
+        Many similar platforms fail due to lack of credibility signals, so this solution prioritizes:
+        <br>• Visual hierarchy to highlight key information
+        <br>• Simple language instead of technical jargon
+        <br>• Transparency-driven UI sections
+        <br>• Mobile-friendly layout for accessibility
+        <br><br>
+        The result is a platform experience that feels more reliable, understandable, and user-centered, improving both engagement and conversion potential.
+    </p>
+
+    <div class="project-links">
+        <a href="https://agroinvestment.rf.gd/" target="_blank" rel="noopener noreferrer" class="demo-btn">
+            🔗 Visit Site <i class='bx bx-play-circle'></i>
+        </a>
+    </div>
+</div>
+
+<div class="project-card mobile-scroll" data-category="website-design">
+    <img src="images/certified-texas-plumbing.webp" alt="Certified Texas Plumbing Website">
+
+    <h3><span>Certified Texas Plumbing — Service-Based Business Website</span></h3><br>
+
+    <p class="project-description">
+        <strong>Project Overview:</strong> Certified Texas Plumbing is a service-based website designed for a local plumbing company. The platform focuses on helping homeowners quickly understand available services, build trust, and request plumbing assistance without friction.
+    </p>
+
+    <p class="project-description">
+        <strong>Problem:</strong> Many plumbing websites suffer from poor structure, unclear messaging, and weak conversion paths. Users often struggle to:
+        <br>• Find key services quickly
+        <br>• Trust the company due to lack of credibility signals
+        <br>• Take action (call, book, request service)
+        <br><br>
+        In competitive local markets, this leads to lost leads and high bounce rates.
+    </p>
+
+    <p class="project-description">
+        <strong>Goal:</strong> Design a clean, high-converting service website that:
+        <br>• Clearly communicates services and expertise
+        <br>• Builds trust instantly with visitors
+        <br>• Encourages fast action (call or booking)
+        <br>• Works seamlessly across mobile and desktop
+    </p>
+
+    <p class="project-description">
+        <strong>Solution:</strong> The website was structured using a conversion-focused layout:
+        <br>• Strong hero section with bold headline and CTA (“Call Now”, “Get Service”)
+        <br>• Clearly defined service categories (repairs, installations, inspections)
+        <br>• Trust indicators such as experience, guarantees, and certifications
+        <br>• Testimonials to reinforce credibility
+        <br>• Simple contact flow to reduce friction for users needing urgent help
+    </p>
+
+    <p class="project-description">
+        <strong>Case Study:</strong> The design follows proven service-based UX patterns where speed and trust are critical. 
+        Plumbing services are often urgent, so the interface prioritizes:
+        <br>• Immediate visibility of contact actions
+        <br>• Clear service breakdown for quick decision-making
+        <br>• Minimal distractions to guide users toward conversion
+        <br><br>
+        By combining strong visual hierarchy, responsive layout, and trust-driven sections, the website improves user confidence and increases the likelihood of inquiries and service bookings.
+    </p>
+
+    <div class="project-links">
+        <a href="https://certifiedtexasplumbing.vercel.app/" target="_blank" rel="noopener noreferrer" class="demo-btn">
+            🔗 Visit Site <i class='bx bx-play-circle'></i>
+        </a>
+    </div>
+</div>
+
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="content-section">
+    <h1 class="header mobile-scroll">Let's Collaborate</h1>
+    <form id="contactForm" action="https://formspree.io/f/movdqpoe/" method="POST" class="mobile-scroll">
+        <div class="input-box">
+            <input type="text" name="name" placeholder="Your Name" required>
+        </div>
+        <div class="input-box">
+            <input type="email" name="email" placeholder="Your Email" required>
+        </div>
+        <div class="input-box">
+            <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn">Send Message</button>
+    </form>
+    <div class="marquee-container mobile-scroll">
+        <p class="marquee">👨‍💻 UX/UI Designer • 🎨 Figma • 🚀 Webflow • 🧠 Design Thinking • 📱 Responsive Design • 🔧 Prototyping • Available for freelance work! Let’s collaborate on your next project.</p>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="mobile-scroll content-section">
+    <div class="col-left">
+        <div class="col-box">
+            <span><i class='bx bx-location-plus'></i></span>
+            <span>Lagos, Nigeria.</span>
+        </div>
+        <div class="col-box">
+            <span><i class='bx bx-envelope'></i></span>
+            <span>skyedesignssd@gmail.com</span>
+        </div>
+    </div>
+    <div class="col-right">
+        <div class="social-icons">
+            <a href="https://www.linkedin.com/in/codewithskye/" target="_blank" rel="noopener noreferrer"><span><i class='bx bxl-linkedin'></i></span></a>
+            <a href="https://www.instagram.com/code.withskye/" target="_blank" rel="noopener noreferrer"><span><i class='bx bxl-instagram'></i></span></a>
+            <a href="https://web.facebook.com/codewithskye" target="_blank" rel="noopener noreferrer"><span><i class='bx bxl-facebook'></i></span></a>
+            <a href="https://github.com/codewithskye" target="_blank" rel="noopener noreferrer"><span><i class='bx bxl-github'></i></span></a>
+        </div>
+    </div>
+<div class="copyright">
+    <span id="copyright-text"></span>
+</div>
+    
+</footer>
+<script>
+    function downloadResume(file) {
+      if(file) {
+        window.location.href = file;
+      }
+    }
+function updateDateTime() {
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const date = now.toLocaleDateString();
+    const time = now.toLocaleTimeString();
+
+    document.getElementById("copyright-text").innerHTML =
+        `© All rights reserved <strong>skyedesigns</strong> ${year} | ${date} ${time}`;
+}
+
+updateDateTime();
+
+setInterval(updateDateTime, 1000);
+
+</script>
+    <script src="script.js"></script>
+    <button id="scroll-arrow" class="scroll-arrow hidden" title="Scroll to top">
+        <i class='bx bx-chevron-up'></i>
+    </button>
+</body>
+</html>
